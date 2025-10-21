@@ -1,3 +1,27 @@
+import streamlit as st
+from authlib.integrations.requests_client import OAuth2Session
+import os
+
+st.set_page_config(page_title="CAP-KT Login", layout="wide")
+
+# Ambil data dari secrets.toml
+client_id = st.secrets["google_oauth"]["client_id"]
+client_secret = st.secrets["google_oauth"]["client_secret"]
+redirect_uri = st.secrets["google_oauth"]["redirect_uri"]
+
+# URL login Google
+auth_url = "https://accounts.google.com/o/oauth2/auth"
+token_url = "https://accounts.google.com/o/oauth2/token"
+
+if "email" not in st.session_state:
+    oauth = OAuth2Session(client_id, client_secret, redirect_uri=redirect_uri, scope="openid email profile")
+    auth_link = oauth.create_authorization_url(auth_url)[0]
+
+    st.title("🔐 Login Diperlukan")
+    st.markdown(f"[Login dengan Google]({auth_link})")
+    st.stop()
+
+st.success(f"✅ Login berhasil sebagai {st.session_state.email}")
 
 import streamlit as st
 import pandas as pd
