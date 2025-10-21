@@ -1,0 +1,6 @@
+streamlit
+authlib
+streamlit-authenticator
+gspread
+google-auth
+pandas
