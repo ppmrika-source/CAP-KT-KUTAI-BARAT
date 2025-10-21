@@ -1,32 +1,65 @@
-import streamlit as st
+# ------------------------------------
+# AUTENTIKASI GOOGLE (Versi Lengkap & Diperbaiki)
+# ------------------------------------
+from urllib.parse import urlparse, parse_qs
 from authlib.integrations.requests_client import OAuth2Session
-import os
 
-st.set_page_config(page_title="CAP-KT Login", layout="wide")
-
-# Ambil data dari secrets.toml
-client_id = st.secrets["google_oauth"]["client_id"]
-client_secret = st.secrets["google_oauth"]["client_secret"]
-redirect_uri = st.secrets["google_oauth"]["redirect_uri"]
-
-# URL login Google
-auth_url = "https://accounts.google.com/o/oauth2/auth"
-token_url = "https://accounts.google.com/o/oauth2/token"
-
-if "email" not in st.session_state:
-    oauth = OAuth2Session(client_id, client_secret, redirect_uri=redirect_uri, scope="openid email profile")
-    auth_link = oauth.create_authorization_url(auth_url)[0]
-
-    st.title("🔐 Login Diperlukan")
-    st.markdown(f"[Login dengan Google]({auth_link})")
+try:
+    client_id = st.secrets["google_oauth"]["client_id"]
+    client_secret = st.secrets["google_oauth"]["client_secret"]
+    redirect_uri = st.secrets["google_oauth"]["redirect_uri"]
+except KeyError:
+    st.error("❌ Konfigurasi Google OAuth belum diatur di Secrets Streamlit Cloud.")
     st.stop()
 
-st.success(f"✅ Login berhasil sebagai {st.session_state.email}")
+auth_url = "https://accounts.google.com/o/oauth2/auth"
+token_url = "https://oauth2.googleapis.com/token"
+userinfo_url = "https://openidconnect.googleapis.com/v1/userinfo"
 
-import streamlit as st
-import pandas as pd
-import base64
+# Inisialisasi session login
+if "email" not in st.session_state:
+    # Cek apakah ada kode dari Google (callback)
+    query_params = st.experimental_get_query_params()
+
+    if "code" in query_params:
+        # Tukar code jadi token akses
+        oauth = OAuth2Session(client_id, client_secret, redirect_uri=redirect_uri)
+        code = query_params["code"][0]
+        token = oauth.fetch_token(token_url, code=code)
+
+        # Ambil data user dari token
+        resp = oauth.get(userinfo_url, token=token)
+        user_info = resp.json()
+
+        # Simpan ke session state
+        st.session_state.email = user_info.get("email", "tidak diketahui")
+        st.session_state.name = user_info.get("name", "User")
+
+        # Hilangkan parameter "code" di URL
+        st.experimental_set_query_params()
+        st.experimental_rerun()
+
+    else:
+        # Buat link login
+        oauth = OAuth2Session(
+            client_id, client_secret,
+            redirect_uri=redirect_uri,
+            scope="openid email profile"
+        )
+        auth_link = oauth.create_authorization_url(auth_url)[0]
+
+        st.title("🔐 Login Diperlukan")
+        st.markdown(f"[➡️ Login dengan Google]({auth_link})")
+        st.stop()
+
+else:
+    st.success(f"✅ Login berhasil sebagai {st.session_state.name} ({st.session_state.email})")
+
+# Tombol Logout di sidebar
 if st.sidebar.button("🚪 Logout"):
+    st.session_state.clear()
+    st.experimental_rerun()
+
     st.session_state.clear()
     st.experimental_rerun()# -------------------------
 # Konfigurasi halaman
