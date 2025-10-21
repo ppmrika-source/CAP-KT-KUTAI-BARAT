@@ -93,8 +93,7 @@ with col2:
     )
 
 with col3:
-    st.image("logo_bangga_melayani.jpg", width=100)
-
+    st.image("logo_cap_kt.png", width=100)
 # -------------------------
 # Deskripsi aplikasi
 # -------------------------
@@ -136,31 +135,101 @@ if menu == "Input Data":
     DATA_WILAYAH = {
         "Barong Tongkok": [
             "Asa",
+            "Balok Asa",
+            "Barong Tongkok",
+            "Belempung Ulaq",
+            "Engkuni Pasek", 
             "Belempung Ulaq",
             "Geleo Asa",
-            "Geleo Baru",
-            "Juaq Asa"
+            "Geleo Baru", 
+            "Belempung Ulaq",
+            "Geleo Asa",
+            "Geleo Baru", 
+            "Gemuruh Asa",
+            "Juaq Asa",
+            "Juhan Asa",
+            "Mencimai",
+            "Muara Asa",
+            "Ngenyan Asa",
+            "Ombau Asa",
+            "Ongko Asa",
+            "Pepas Asa",
+            "Rejo Basuki",
+            "Sendawar",
+            "Simpang Raya",
+            "Sumber Sari",
         ],
         "Bentian Besar": [
+            "Anan Jaya",
             "Dilang Puti",
-            "Pepas Eheng",
-            "Randa Empas"
+            "Jelum Sibak",
+            "Penarung",
+            "Randa Empas",
+            "Sambung",
+            "Suakong",
+            "Tende",
+            "Tukoq",
         ],
         "Bongan": [
-            "Resak",
-            "…",  # isi kampung lainnya
+            "Bukit Harapan",
+            "Deraya",
+            "Gerungung",
+            "Jambuk",
+            "Jambuk Makmur",
+            "Lemper", 
+            "Muara Gusik",
+            "Muara Kedang",
+            "Muara Siram", 
+            "Penawai",
+            "Pereng Taliq",
+            "Resak", 
+            "Siram Jaya",
+            "Siram Makmur",
+            "Tanjung Sari",
+            "Tanjung Soke",
         ],
         "Damai": [
-            "…",  # kampung Damai
+            "Benung",
+            "Bermai",
+            "Besiq",
+            "Damai Kota",
+            "Damai Seberang", 
+            "Jengan Danum",
+            "Keay",
+            "Kelian", 
+            "Lumpat Dahuq",
+            "Mantar",
+            "Mendika", 
+            "Muara Bomboy",
+            "Muara Niliq",
+            "Muara Nyahing",
+            "Muara Tokong",
+            "Sempatn",
+            "Tapulang",
         ],
         "Jempang": [
             "Tanjung Isuy",
             "Tanjung Jan",
-            "Tanjung Soke",
-            "Muara Ohong"
+            "Tanjung Jone",
+            "Bekokong Makmur",
+            "Lembonah",
+            "Mancong",
+            "Muara Nayan",
+            "Muara Ohong", 
+            "Muara Tae",
+            "Pentat",
+            "Perigiq", 
+            "Pulau Lanting",
         ],
         "Muara Lawa": [
-            "…"
+            "Benggeris",
+            "Cempedes",
+            "Dingin",
+            "Lambing",
+            "Lotaq", 
+            "Muara Begai",
+            "Muara Lawa",
+            "Payang", 
         ],
         "Penyinggahan": [
             "Loa Deras",
@@ -171,7 +240,18 @@ if menu == "Input Data":
             "Bakung"
         ],
         "Muara Pahu": [
-            "…"
+            "Dasaq",
+            "Gunung Bayan",
+            "Jerang Dayak",
+            "Jerang Melayu",
+            "Mendung", 
+            "Muara Baroh",
+            "Muara Beloan",
+            "Sebelang", 
+            "Tanjung Laong",
+            "Tanjung Pagar",
+            "Teluk Tempudau", 
+            "Tepain Ulaq",
         ],
         "Melak": [
             "Empas",
@@ -182,25 +262,103 @@ if menu == "Input Data":
             "Muara Benangaq"
         ],
         "Mook Manaar Bulatn": [
-            "…"
+            "Abit",
+            "Gadur",
+            "Gemuruh",
+            "Gunung Rampah",
+            "Jengan", 
+            "Karangan",
+            "Kelumpang", 
+            "Linggang Marimun",
+            "Linggang Muara Batuq",
+            "Merayaq", 
+            "Muara Jawaq",
+            "Muara Kalaq",
+            "Rembayan",
+            "Sakaq Lotoq",
+            "Sakaq Tada",
+            "Tondoh",
         ],
         "Nyuatan": [
-            "…"
+            "Awai",
+            "Dempar",
+            "Intu Lingau",
+            "Jontai",
+            "Lakan Bilem", 
+            "Mu'ut",
+            "Sembuan",
+            "Sentalar", 
+            "Temula",
+            "Terajuk",
         ],
         "Linggang Bigung": [
-            "…"
+            "Linggang Amer",
+            "Linggang Bangunsari",
+            "Linggang Bigung",
+            "Linggang Bigung Baru",
+            "Linggang Kebut", 
+            "Linggang Mapan",
+            "Linggang Melapeh",
+            "Linggang Melapeh Baru", 
+            "Linggang Mencelew",
+            "Linggang Purwodadi",
+            "Linggang Tutung",
         ],
         "Long Iram": [
-            "…"
+            "Anah",
+            "Kelian Luar",
+            "Keliwai",
+            "Linggang Muara Leban",
+            "Long Daliq", 
+            "Long Iram Bayan",
+            "Long Iram Ilir",
+            "Long Iram Kota", 
+            "Long Iram Seberang",
+            "Sukomulyo",
+            "Ujoh Halang",        
         ],
         "Sekolaq Darat": [
-            "…"
+            "Leleng",
+            "Sekolaq Darat",
+            "Sekolaq Joleq",
+            "Sekolaq Muliaq",
+            "Sekolaq Oday", 
+            "Sumber Bangun",
+            "Srimulyo",
+            "Sumber Rejo", 
         ],
         "Tering": [
-            "…"
+            "Kelian Dalam",
+            "Linggang Banjarejo",
+            "Linggang Jelemuq",
+            "Linggang Kelubaq",
+            "Linggang Muara Mujan", 
+            "Linggang Muyub Ilir",
+            "Linggang Purworejo",
+            "Linggang Tering Seberang", 
+            "Muyub Aket",
+            "Muyub Ulu",
+            "Tering Baru",
+            "Tering Lama",
+            "Tering Lama Ulu",
+            "Tukul", 
         ],
         "Siluq Ngurai": [
-            "…"
+            "Bentas",
+            "Betung",
+            "Kaliq",
+            "Kendisiq",
+            "Kenyanyan", 
+            "Kiaq",
+            "Lendian Liang Nayuq",
+            "Muara Ponaq", 
+            "Muhur",
+            "Penawang",
+            "Rikong",
+            "Sang-Sang",
+            "Tanah Mea",
+            "Tebisaq", 
+            "Tendiq",
         ]
     }
 
@@ -306,7 +464,6 @@ import pandas as pd
 
 st.set_page_config(page_title="📂 Aplikasi Berbagi Data", layout="wide")
 st.title("📂 Form Berbagi Data")
-
 # Inisialisasi session state untuk menyimpan data upload
 if "data_upload" not in st.session_state:
     st.session_state["data_upload"] = []
@@ -314,10 +471,22 @@ if "data_upload" not in st.session_state:
 # FORM UPLOAD DATA
 # ----------------------------
 with st.form("form_berbagi_data"):
-    st.subheader("📝 Upload Data Baru")
-
-    identitas_data = st.text_input("Identitas Data")
+    st.subheader("📝 Upload Metadata & File")
+    nama_data = st.text_input("Nama Data")
+    sub_kegiatan_opd = st.text_input("Sub Kegiatan OPD")
+    unit_pengelola = st.text_input("Unit Pengelola Data (Produsen Data)")
+    sumber_data = st.text_input("Sumber Data")
+    deskripsi = st.text_area("Deskripsi Data")
+    tujuan = st.text_area("Tujuan Pengumpulan Data")
+    wilayah = st.text_input("Ruang Lingkup / Wilayah")
+    waktu = st.text_input("Waktu Pengumpulan / Update")
+    metode = st.text_input("Metode Pengumpulan")
+    kualitas = st.text_area("Kualitas dan Validasi Data")
+    indikator = st.text_input("Indikator Terkait")
+    pemanfaatan = st.text_area("Pemanfaatan Data")
+    rencana_bagi = st.text_area("Rencana Bagi Pakai Data")
     format_data = st.selectbox("Format Data", ["CSV", "Excel", "PDF", "Word", "Lainnya"])
+    pic = st.text_input("PIC Metadata")
 
     UNIT_KERJA = [
         "Badan Perencanaan Pembangunan Penelitian & Pengembangan Daerah",
