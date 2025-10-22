@@ -110,7 +110,7 @@ st.markdown("### 🎉 Selamat datang di Aplikasi CAP-KT")
 st.write("Anda sudah berhasil login. Silakan lanjut ke fitur utama aplikasi.")
 
 st.session_state.clear()
-    st.experimental_rerun()# -------------------------
+st.experimental_rerun()# -------------------------
 # Konfigurasi halaman
 # -------------------------
 st.set_page_config(
@@ -742,4 +742,5 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
