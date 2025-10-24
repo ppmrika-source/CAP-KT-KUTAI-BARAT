@@ -110,7 +110,11 @@ st.write("Anda sudah berhasil login. Silakan lanjut ke fitur utama aplikasi.")
 if st.sidebar.button("🚪 Logout"):
     st.session_state.clear()
     st.rerun()
-
+# Alternatif: pakai markdown dengan warna
+st.sidebar.markdown(
+    '<p style="color: orange; font-weight:bold;">🚪 Logout</p>', 
+    unsafe_allow_html=True
+)
 # Konfigurasi halaman
 # -------------------------
 st.set_page_config(
@@ -756,6 +760,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
