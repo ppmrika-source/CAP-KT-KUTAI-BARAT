@@ -46,42 +46,44 @@ def make_oauth_session(state=None):
 # ----------------------------
 if "email" not in st.session_state:
     params = st.query_params
-    code = params.get("code", [None])[0] if "code" in params else None
-    error = params.get("error", [None])[0] if "error" in params else None
+    code = params.get("code")
+    error = params.get("error")
 
     if error:
         st.error(f"Login error: {error}")
         st.stop()
 
-    # --- Tahap 2: Jika ada kode balasan dari Google ---
     if code:
         try:
             oauth = make_oauth_session()
-            authorization_response = st.query_params
-            full_callback_url = st.experimental_get_url()
             token = oauth.fetch_token(
                 url=TOKEN_URL,
-                authorization_response=full_callback_url,
                 code=code,
-                grant_type="authorization_code"
+                grant_type="authorization_code",
+                redirect_uri=redirect_uri
             )
 
-            # Ambil user info manual (pakai Authorization header)
             headers = {"Authorization": f"Bearer {token['access_token']}"}
             resp = oauth.get(USERINFO_URL, headers=headers)
             userinfo = resp.json()
 
-            # Simpan info ke session
             st.session_state.email = userinfo.get("email")
             st.session_state.name = userinfo.get("name")
 
-            # Bersihkan URL dan reload
             st.query_params.clear()
             st.rerun()
 
         except Exception as e:
             st.error(f"Gagal login: {e}")
             st.stop()
+
+    else:
+        oauth = make_oauth_session()
+        authorization_url, state = oauth.create_authorization_url(AUTH_URL)
+        st.title("🔐 Login Diperlukan")
+        st.markdown(f"[➡️ Login dengan Google]({authorization_url})")
+        st.stop()
+
 
     # --- Tahap 1: Jika belum login, tampilkan tombol login ---
     else:
@@ -736,6 +738,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
