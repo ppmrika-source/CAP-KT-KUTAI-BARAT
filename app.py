@@ -667,8 +667,7 @@ with st.form("upload_form"):
 
     uploaded_file = st.file_uploader("Pilih File untuk Diupload", type=["csv", "xlsx", "pdf", "docx"])
 
-    submitted = 
-with st.form("nama_form") st.form_submit_button("📤 Upload Data")
+    submitted = st.form("nama_form") st.form_submit_button("📤 Upload Data")
 
     if submitted:
         if uploaded_file is not None:
@@ -757,6 +756,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
