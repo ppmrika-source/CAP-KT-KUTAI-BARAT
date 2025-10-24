@@ -75,7 +75,7 @@ except Exception as e:
     st.stop()
 
 
-    else:
+else:
         # ----------------------------
         # 4) Buat authorization URL dan tampilkan link
         # ----------------------------
@@ -738,6 +738,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
