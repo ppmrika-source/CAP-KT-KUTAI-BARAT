@@ -59,19 +59,21 @@ if "email" not in st.session_state:
             st.stop()
 
         # ----------------------------
-        # 3) Ambil user info dengan access token
-        # ----------------------------
-        try:
-            resp = oauth.get(USERINFO_URL, token=token)
-            userinfo = resp.json()
-            st.session_state.email = userinfo.get("email")
-            st.session_state.name = userinfo.get("name")
-            st.experimental_set_query_params()  # hapus code dari URL
-            st.success(f"Login sukses: {st.session_state.email}")
-            st.experimental_rerun()
-        except Exception as e:
-            st.error(f"Gagal ambil userinfo: {e}")
-            st.stop()
+       # 3) Ambil user info dengan access token
+try:
+    headers = {"Authorization": f"Bearer {token['access_token']}"}
+    resp = oauth.get(USERINFO_URL, headers=headers)
+    userinfo = resp.json()
+
+    st.session_state.email = userinfo.get("email")
+    st.session_state.name = userinfo.get("name")
+    st.experimental_set_query_params()  # hapus code dari URL
+    st.success(f"Login sukses: {st.session_state.email}")
+    st.experimental_rerun()
+except Exception as e:
+    st.error(f"Gagal ambil userinfo: {e}")
+    st.stop()
+
 
     else:
         # ----------------------------
@@ -736,6 +738,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
