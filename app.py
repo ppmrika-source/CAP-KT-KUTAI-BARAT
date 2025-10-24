@@ -57,8 +57,11 @@ if "email" not in st.session_state:
     if code:
         try:
             oauth = make_oauth_session()
+            authorization_response = st.experimental_get_query_params()
+            full_callback_url = st.experimental_get_url()
             token = oauth.fetch_token(
                 url=TOKEN_URL,
+                authorization_response=full_callback_url,
                 code=code,
                 grant_type="authorization_code"
             )
@@ -733,6 +736,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
