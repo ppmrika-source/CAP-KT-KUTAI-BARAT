@@ -577,24 +577,38 @@ if "data_upload" not in st.session_state:
 # ----------------------------
 # FORM UPLOAD DATA
 # ----------------------------
-with st.form("form_berbagi_data"):
-    st.subheader("📝 Upload Metadata & File")
-    nama_data = st.text_input("Nama Data")
-    sub_kegiatan_opd = st.text_input("Sub Kegiatan OPD")
-    unit_pengelola = st.text_input("Unit Pengelola Data (Produsen Data)")
-    sumber_data = st.text_input("Sumber Data")
-    deskripsi = st.text_area("Deskripsi Data")
-    tujuan = st.text_area("Tujuan Pengumpulan Data")
-    wilayah = st.text_input("Ruang Lingkup / Wilayah")
-    waktu = st.text_input("Waktu Pengumpulan / Update")
-    metode = st.text_input("Metode Pengumpulan")
-    kualitas = st.text_area("Kualitas dan Validasi Data")
-    indikator = st.text_input("Indikator Terkait")
-    pemanfaatan = st.text_area("Pemanfaatan Data")
-    rencana_bagi = st.text_area("Rencana Bagi Pakai Data")
-    format_data = st.selectbox("Format Data", ["CSV", "Excel", "PDF", "Word", "Lainnya"])
-    pic = st.text_input("PIC Metadata")
+with st.form("form_metadata"):
+    nama_data = st.text_input("Nama Data *")
+    sub_kegiatan_opd = st.text_input("Sub Kegiatan OPD *")
+    unit_pengelola = st.text_input("Unit Pengelola Data (Produsen Data) *")
+    sumber_data = st.text_input("Sumber Data *")
+    deskripsi = st.text_area("Deskripsi Data *")
+    tujuan = st.text_area("Tujuan Pengumpulan Data *")
+    wilayah = st.text_input("Ruang Lingkup / Wilayah *")
+    waktu = st.text_input("Waktu Pengumpulan / Update *")
+    metode = st.text_input("Metode Pengumpulan *")
+    kualitas = st.text_area("Kualitas dan Validasi Data *")
+    indikator = st.text_input("Indikator Terkait *")
+    pemanfaatan = st.text_area("Pemanfaatan Data *")
+    rencana_bagi = st.text_area("Rencana Bagi Pakai Data *")
+    format_data = st.selectbox("Format Data *", ["", "CSV", "Excel", "PDF", "Word", "Lainnya"])
+    pic = st.text_input("PIC Metadata *")
 
+    submit = st.form_submit_button("💾 Simpan Metadata")
+
+    if submit:
+        # Kumpulkan semua input ke list untuk validasi
+        data_fields = [
+            nama_data, sub_kegiatan_opd, unit_pengelola, sumber_data, deskripsi, tujuan,
+            wilayah, waktu, metode, kualitas, indikator, pemanfaatan, rencana_bagi,
+            format_data, pic
+        ]
+
+        # Cek apakah ada kolom yang kosong
+        if any(field.strip() == "" for field in data_fields):
+            st.error("⚠️ Mohon lengkapi semua kolom bertanda * sebelum menyimpan data.")
+        else:
+            # Tambahkan data ke DataFrame
     UNIT_KERJA = [
         "Badan Perencanaan Pembangunan Penelitian & Pengembangan Daerah",
         "Badan Pendapatan Daerah",
@@ -742,6 +756,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
