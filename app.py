@@ -30,7 +30,7 @@ token_url = "https://oauth2.googleapis.com/token"
 if "email" not in st.session_state:
     # OAuth session
     oauth = OAuth2Session(client_id, client_secret, redirect_uri=redirect_uri, scope="openid email profile")
-    auth_link = oauth.https://cap-kt-kutai-barat.streamlit.app(auth_url)[0]
+    authorization_url, state = oauth.create_authorization_url(auth_url)
 
     st.title("🔐 Login Diperlukan")
     st.markdown(f"[➡️ Login dengan Google]({auth_link})")
@@ -684,4 +684,5 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
