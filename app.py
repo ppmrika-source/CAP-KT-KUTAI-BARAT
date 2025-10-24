@@ -4,20 +4,8 @@ from authlib.integrations.requests_client import OAuth2Session
 import pandas as pd
 import base64
 import os
-st.sidebar.markdown("---")
-if st.sidebar.button("🚪 Logout"):
-    st.session_state.clear()
-    st.experimental_rerun()
-
-# ==============================================================
-# KONTEN SETELAH LOGIN
-# ==============================================================
-
-st.markdown("### 🎉 Selamat datang di Aplikasi CAP-KT")
-st.write("Anda sudah berhasil login. Silakan lanjut ke fitur utama aplikasi.")
-
 st.session_state.clear()
-st.experimental_rerun()# -------------------------
+st.rerun()# -------------------------
 # Konfigurasi halaman
 # -------------------------
 st.set_page_config(
@@ -649,6 +637,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
