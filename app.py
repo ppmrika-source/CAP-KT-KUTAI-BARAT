@@ -105,24 +105,16 @@ st.success(f"✅ Login berhasil sebagai {st.session_state.email}")
 
 st.markdown("### 🎉 Selamat datang di Aplikasi CAP-KT")
 st.write("Anda sudah berhasil login. Silakan lanjut ke fitur utama aplikasi.")
-
 # Tombol Logout
-logout_button = """
-<div style="
-    background-color:#f0f0f0;
-    color:black;
-    padding:8px 16px;
-    text-align:center;
-    border-radius:5px;
-    font-weight:bold;
-    cursor:pointer;
-    width:100%;
-" onclick="window.location.reload();">
-🚪 Logout
-</div>
-"""
-
-st.sidebar.markdown(logout_button, unsafe_allow_html=True)
+if st.sidebar.button("🚪 Logout"):
+    st.session_state.clear()
+    st.rerun()
+    
+# Alternatif: pakai markdown dengan warna
+st.sidebar.markdown(
+    '<p style="color: black; font-weight:bold;">🚪 Logout</p>', 
+    unsafe_allow_html=True
+)
 
 # Script untuk membersihkan session ketika diklik
 if st.session_state.get("logout_clicked"):
@@ -774,6 +766,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
