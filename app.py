@@ -86,7 +86,7 @@ if "email" not in st.session_state:
 
 
     # --- Tahap 1: Jika belum login, tampilkan tombol login ---
-    else:
+else:
         oauth = make_oauth_session()
         authorization_url, state = oauth.create_authorization_url(AUTH_URL)
 
@@ -736,6 +736,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
