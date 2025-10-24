@@ -597,7 +597,7 @@ with st.form("form_metadata"):
     submit = st.form_submit_button("💾 Simpan Metadata")
 
 if submit:
-    # Kumpulkan semua input ke list untuk validasi
+    # Kumpulkan semua input ke list
     data_fields = [
         nama_data, sub_kegiatan_opd, unit_pengelola, sumber_data, deskripsi, tujuan,
         wilayah, waktu, metode, kualitas, indikator, pemanfaatan, rencana_bagi,
@@ -605,9 +605,9 @@ if submit:
     ]
 
     # Cek apakah ada kolom yang kosong
-if any(field.strip() == "" for field in data_fields):
-    st.error("⚠️ Mohon lengkapi semua kolom bertanda * sebelum menyimpan data.")
-else:
+    if any(field.strip() == "" for field in data_fields):
+        st.error("⚠️ Mohon lengkapi semua kolom bertanda * sebelum menyimpan data.")
+    else:
     # Tambahkan data ke DataFrame
     UNIT_KERJA = [
         "Badan Perencanaan Pembangunan Penelitian & Pengembangan Daerah",
@@ -756,6 +756,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
