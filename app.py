@@ -90,9 +90,7 @@ if "email" not in st.session_state:
         oauth = make_oauth_session()
         authorization_url, state = oauth.create_authorization_url(AUTH_URL)
 
-        st.title("🔐 Login Diperlukan")
-        st.markdown(f"[➡️ Login dengan Google]({authorization_url})")
-        st.stop()
+        
 
 # ----------------------------
 # KONTEN APLIKASI SETELAH LOGIN
@@ -738,6 +736,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
