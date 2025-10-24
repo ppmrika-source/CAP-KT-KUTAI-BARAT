@@ -1,3 +1,9 @@
+import pandas as pd
+import streamlit as st
+from authlib.integrations.requests_client import OAuth2Session
+import base64
+import os
+
 import streamlit as st
 from authlib.integrations.requests_client import OAuth2Session
 
@@ -736,6 +742,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
