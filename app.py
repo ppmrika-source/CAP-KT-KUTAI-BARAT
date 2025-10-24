@@ -605,7 +605,7 @@ if submit:
     ]
 
     # Cek apakah ada kolom yang kosong
-if any(str(field.strip() == "" for field in data_fields):
+if any(str(field).strip() == "" for field in data_fields):
         st.error("⚠️ Mohon lengkapi semua kolom bertanda * sebelum menyimpan data.")
 else:
     # Tambahkan data ke DataFrame
@@ -756,6 +756,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
