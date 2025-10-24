@@ -1,11 +1,58 @@
 import streamlit as st
-from urllib.parse import urlparse, parse_qs
 from authlib.integrations.requests_client import OAuth2Session
 import pandas as pd
 import base64
 import os
-st.session_state.clear()
-st.rerun()# -------------------------
+
+# ------------------------------------
+# KONFIGURASI HALAMAN
+# ------------------------------------
+st.set_page_config(
+    page_title="📊 CAP-KT (Cek Aktivitas & Program Kemiskinan Terpadu) Kutai Barat",
+    page_icon="📂",
+    layout="wide"
+)
+
+# ------------------------------------
+# AUTENTIKASI GOOGLE
+# ------------------------------------
+try:
+    client_id = st.secrets["google_oauth"]["client_id"]
+    client_secret = st.secrets["google_oauth"]["client_secret"]
+    redirect_uri = st.secrets["google_oauth"]["redirect_uri"]
+except KeyError:
+    st.error("❌ Konfigurasi Google OAuth belum diatur di Secrets Streamlit Cloud.")
+    st.stop()
+
+auth_url = "https://accounts.google.com/o/oauth2/auth"
+token_url = "https://oauth2.googleapis.com/token"
+
+if "email" not in st.session_state:
+    # OAuth session
+    oauth = OAuth2Session(client_id, client_secret, redirect_uri=redirect_uri, scope="openid email profile")
+    auth_link = oauth.create_authorization_url(auth_url)[0]
+
+    st.title("🔐 Login Diperlukan")
+    st.markdown(f"[➡️ Login dengan Google]({auth_link})")
+    st.stop()
+else:
+    st.success(f"✅ Login berhasil sebagai {st.session_state.email}")
+
+# Tombol Logout
+if st.sidebar.button("🚪 Logout"):
+    st.session_state.clear()
+    st.rerun()
+# ==============================================================
+# KONTEN SETELAH LOGIN
+# ==============================================================
+
+st.markdown("### 🎉 Selamat datang di Aplikasi CAP-KT")
+st.write("Anda sudah berhasil login. Silakan lanjut ke fitur utama aplikasi.")
+
+# Tombol logout (opsional tampil di halaman utama)
+if st.button("🚪 Logout"):
+    st.session_state.clear()
+    st.rerun()
 # Konfigurasi halaman
 # -------------------------
 st.set_page_config(
@@ -637,7 +684,3 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
-
-
-
-
