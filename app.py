@@ -1,47 +1,99 @@
 import streamlit as st
 from authlib.integrations.requests_client import OAuth2Session
-import pandas as pd
-import base64
-import os
 
-# ------------------------------------
-# KONFIGURASI HALAMAN
-# ------------------------------------
-st.set_page_config(
-    page_title="📊 CAP-KT (Cek Aktivitas & Program Kemiskinan Terpadu) Kutai Barat",
-    page_icon="📂",
-    layout="wide"
-)
-
-# ------------------------------------
-# AUTENTIKASI GOOGLE
-# ------------------------------------
+# ----------------------------
+# Konfigurasi (ambil dari secrets)
+# ----------------------------
 try:
     client_id = st.secrets["google_oauth"]["client_id"]
     client_secret = st.secrets["google_oauth"]["client_secret"]
     redirect_uri = st.secrets["google_oauth"]["redirect_uri"]
 except KeyError:
-    st.error("❌ Konfigurasi Google OAuth belum diatur di Secrets Streamlit Cloud.")
+    st.error("Konfigurasi Google OAuth belum ada. Tambahkan di .streamlit/secrets.toml")
     st.stop()
 
-auth_url = "https://accounts.google.com/o/oauth2/auth"
-token_url = "https://oauth2.googleapis.com/token"
+AUTH_URL = "https://accounts.google.com/o/oauth2/auth"
+TOKEN_URL = "https://oauth2.googleapis.com/token"
+USERINFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo"
+SCOPE = "openid email profile"
 
+st.set_page_config(page_title="OAuth Demo")
+
+# ----------------------------
+# Helper: buat session OAuth
+# ----------------------------
+def make_oauth_session(state=None):
+    return OAuth2Session(
+        client_id=client_id,
+        client_secret=client_secret,
+        redirect_uri=redirect_uri,
+        scope=SCOPE,
+        state=state
+    )
+
+# ----------------------------
+# 1) Jika belum ada user di session -> cek code di URL atau buat authorization link
+# ----------------------------
 if "email" not in st.session_state:
-    # OAuth session
-    oauth = OAuth2Session(client_id, client_secret, redirect_uri=redirect_uri, scope="openid email profile")
-    authorization_url, state = oauth.create_authorization_url(auth_url)
+    params = st.experimental_get_query_params()
+    code = params.get("code", [None])[0]
+    error = params.get("error", [None])[0]
 
-    st.title("🔐 Login Diperlukan")
-    st.markdown(f"[➡️ Login dengan Google]({auth_link})")
-    st.stop()
-else:
-    st.success(f"✅ Login berhasil sebagai {st.session_state.email}")
+    if error:
+        st.error(f"Login error: {error}")
+        st.stop()
 
-# Tombol Logout
-if st.sidebar.button("🚪 Logout"):
-    st.session_state.clear()
-    st.rerun()
+    if code:
+        # ----------------------------
+        # 2) Tukar authorization code dengan token
+        # ----------------------------
+        try:
+            oauth = make_oauth_session()
+            token = oauth.fetch_token(
+                url=TOKEN_URL,
+                code=code,
+                grant_type="authorization_code"
+            )
+        except Exception as e:
+            st.error(f"Gagal fetch token: {e}")
+            st.stop()
+
+        # ----------------------------
+        # 3) Ambil user info dengan access token
+        # ----------------------------
+        try:
+            resp = oauth.get(USERINFO_URL, token=token)
+            userinfo = resp.json()
+            st.session_state.email = userinfo.get("email")
+            st.session_state.name = userinfo.get("name")
+            st.experimental_set_query_params()  # hapus code dari URL
+            st.success(f"Login sukses: {st.session_state.email}")
+            st.experimental_rerun()
+        except Exception as e:
+            st.error(f"Gagal ambil userinfo: {e}")
+            st.stop()
+
+    else:
+        # ----------------------------
+        # 4) Buat authorization URL dan tampilkan link
+        # ----------------------------
+        oauth = make_oauth_session()
+        authorization_url, state = oauth.create_authorization_url(AUTH_URL)
+        st.markdown("### 🔐 Login dengan Google")
+        st.markdown(f"[➡️ Klik untuk login]({authorization_url})")
+        st.stop()
+
+# ----------------------------
+# Jika sudah login -> Konten aplikasi
+# ----------------------------
+st.write(f"Selamat datang, {st.session_state.get('name', st.session_state.email)}")
+
+# Tombol logout
+if st.button("Logout"):
+    for k in list(st.session_state.keys()):
+        del st.session_state[k]
+    st.experimental_rerun()
+
 # ==============================================================
 # KONTEN SETELAH LOGIN
 # ==============================================================
@@ -684,5 +736,6 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
