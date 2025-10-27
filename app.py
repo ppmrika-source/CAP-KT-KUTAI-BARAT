@@ -20,6 +20,9 @@ try:
     
     # Pastikan nama worksheet sesuai dengan tab di Google Sheet kamu
     sheet = client.open_by_url("https://docs.google.com/spreadsheets/d/1_ffZ-7UYfYhcHfy3ut7EsL48BeZpvYFr/edit?gid=1114012059#gid=1114012059").worksheet("DataUtama")
+except Exception as e:
+    st.sidebar.error(f"⚠️ Gagal konek ke Google Sheet: {e}")
+    sheet = None
 import streamlit as st
 from authlib.integrations.requests_client import OAuth2Session
 
@@ -854,6 +857,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
