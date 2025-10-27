@@ -239,7 +239,7 @@ if "data_bantuan" not in st.session_state:
         "Program", "Kegiatan", "Sub Kegiatan","Kecamatan","Kampung",
         "Nama Individu", "NIK Individu",  
         "Nama Kelompok/UMKM", "Nama Pengurus & Anggota","Nomor Registrasi/No. Akta Notaris Kelompok",
-        "Jenis Bantuan", "Rincian Bantuan", "Jumlah Bantuan", "Total Realisasi PAGU, "Nama OPD Penanggung Jawab Bantuan"
+        "Jenis Bantuan", "Rincian Bantuan", "Jumlah Bantuan", "Total Realisasi PAGU", "Nama OPD Penanggung Jawab Bantuan"
     ])
 
 # -----------------------------
@@ -823,6 +823,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
