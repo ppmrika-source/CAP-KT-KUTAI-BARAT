@@ -4,6 +4,8 @@ from authlib.integrations.requests_client import OAuth2Session
 import base64
 import os
 
+import gspread
+from google.oauth2.service_account import Credentials
 import streamlit as st
 from authlib.integrations.requests_client import OAuth2Session
 
@@ -109,7 +111,22 @@ st.write("Anda sudah berhasil login. Silakan lanjut ke fitur utama aplikasi.")
 if st.sidebar.button("🚪 Logout"):
     st.session_state.clear()
     st.rerun()
-    
+# 🔵 Konfigurasi koneksi ke Google Sheet
+import gspread
+from google.oauth2.service_account import Credentials
+
+SCOPE = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+
+try:
+    creds_dict = st.secrets["gcp_service_account"]  # dari secrets.toml
+    credentials = Credentials.from_service_account_info(creds_dict, scopes=SCOPE)
+    client = gspread.authorize(credentials)
+    SHEET_URL = "https://docs.google.com/spreadsheets/d/1YOUR_SHEET_ID/edit"  # ganti ID-nya
+    sheet = client.open_by_url(SHEET_URL).worksheet("DataBantuan")
+    st.sidebar.success("✅ Terhubung ke Google Sheet")
+except Exception as e:
+    st.sidebar.error(f"⚠️ Gagal konek ke Google Sheet: {e}")
+    sheet = None    
 # Alternatif: pakai markdown dengan warna
 st.sidebar.markdown(
     '<p style="color: black; font-weight:bold;">🚪 Logout</p>', 
@@ -823,6 +840,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
