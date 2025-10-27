@@ -482,7 +482,7 @@ if menu == "Input Data":
     # Daftar OPD penanggung jawab
     # ===============================
     DAFTAR_OPD = [
-      "Badan Perencanaan Pembangunan Penelitian & Pengembangan Daerah",
+        "Badan Perencanaan Pembangunan Penelitian & Pengembangan Daerah",
         "Badan Pendapatan Daerah",
         "Badan Kepegawaian dan Pengembangan Sumber Daya Manusia",
         "Badan Keuangan dan Aset Daerah",
@@ -533,7 +533,7 @@ if menu == "Input Data":
     # ===============================
     # Form Input
     # ===============================
-    unit_kerja = st.selectbox("Unit Kerja Pengupload", UNIT_KERJA)
+    unit_kerja = st.selectbox("Nama OPD", DAFTAR_OPD)
 
     col1, col2 = st.columns(2)
 
@@ -823,6 +823,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
