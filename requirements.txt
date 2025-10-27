@@ -4,3 +4,5 @@ streamlit-authenticator
 gspread
 google-auth
 pandas
+google-auth-oauthlib
+google-auth-httplib2
