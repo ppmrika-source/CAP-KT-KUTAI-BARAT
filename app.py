@@ -239,7 +239,7 @@ if "data_bantuan" not in st.session_state:
         "Program", "Kegiatan", "Sub Kegiatan","Kecamatan","Kampung",
         "Nama Individu", "NIK Individu",  
         "Nama Kelompok/UMKM", "Nama Pengurus & Anggota","Nomor Registrasi/No. Akta Notaris Kelompok",
-        "Jenis Bantuan", "Rincian Bantuan", "Jumlah Bantuan", "Total Realisasi PAGU", "Nama OPD Penanggung Jawab Bantuan"
+        "Jenis Bantuan", "Rincian Bantuan", "Jumlah Bantuan", "Total PAGU", "Nama OPD Penanggung Jawab Bantuan"
     ])
 
 # -----------------------------
@@ -556,7 +556,7 @@ if menu == "Input Data":
         rincian_bantuan = st.text_area("Rincian Bantuan")
 
     jumlah_bantuan = st.number_input("Jumlah Bantuan (Rp)", min_value=0, step=1000)
-    total_PAGU = st.number_input("Total Penyerapan PAGU (Rp)", min_value=0, step=1000)
+    total_PAGU = st.number_input("Total PAGU (Rp)", min_value=0, step=1000)
     nama_opd = st.selectbox("Nama OPD Penanggung Jawab Bantuan", DAFTAR_OPD)
     if st.button("💾 Simpan Data"):
         new_data = pd.DataFrame([{
@@ -823,6 +823,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
