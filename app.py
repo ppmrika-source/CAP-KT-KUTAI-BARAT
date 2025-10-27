@@ -139,11 +139,17 @@ try:
     credentials = Credentials.from_service_account_info(creds_dict, scopes=SCOPE)
     client = gspread.authorize(credentials)
     SHEET_URL = "https://docs.google.com/spreadsheets/d/1_ffZ-7UYfYhcHfy3ut7EsL48BeZpvYFr/edit?gid=1114012059#gid=1114012059"
-    sheet = client.open_by_url(SHEET_URL).worksheet("DataBantuan")
+    sheet = client.open_by_url(SHEET_URL).worksheet("Data Utama")
     st.sidebar.success("✅ Terhubung ke Google Sheet")
 except Exception as e:
     st.sidebar.error(f"⚠️ Gagal konek ke Google Sheet: {e}")
-    sheet = None    
+    sheet = None
+# 🔍 Tes apakah worksheet benar-benar aktif
+if sheet:
+    st.sidebar.write("✅ Koneksi berhasil, worksheet aktif:", sheet.title)
+else:
+    st.sidebar.error("❌ Belum terkoneksi ke worksheet!")
+
 # Alternatif: pakai markdown dengan warna
 st.sidebar.markdown(
     '<p style="color: black; font-weight:bold;">🚪 Logout</p>', 
@@ -857,6 +863,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
