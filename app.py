@@ -15,18 +15,19 @@ try:
     client = gspread.authorize(credentials)
 
     # ✅ Ganti dengan URL Google Sheet kamu (tanpa bagian ?gid=...)
-    SHEET_URL = SHEET_URL = "https://docs.google.com/spreadsheets/d/1_ffZ-7UYfYhcHfy3ut7EsL48BeZpvYFr/edit"
+    SHEET_URL = "https://docs.google.com/spreadsheets/d/1_ffZ-7UYfYhcHfy3ut7EsL48BeZpvYFr/edit"
 
-    # ✅ Ganti "CAP-KT" dengan NAMA TAB (worksheet) yang benar di Google Sheet kamu
+    # ✅ Ganti "Data Utama" dengan nama TAB yang benar di Google Sheet kamu
     sheet = client.open_by_url(SHEET_URL).worksheet("Data Utama")
 
     st.sidebar.success(f"✅ Terhubung ke Google Sheet: {sheet.title}")
 
 except Exception as e:
-  # ⛔️ Ganti bagian ini dengan versi lebih detail
+    # ⛔️ Versi detail biar tahu error aslinya
     st.sidebar.error(f"⚠️ Gagal konek ke Google Sheet: {type(e).__name__} - {e}")
     sheet = None
-# 🔍 Tambahkan juga ini di bawah untuk memastikan koneksi aktif
+
+# 🔍 Tambahkan ini untuk memastikan koneksi aktif
 if sheet:
     st.sidebar.write("✅ Worksheet aktif:", sheet.title)
 else:
@@ -882,6 +883,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
