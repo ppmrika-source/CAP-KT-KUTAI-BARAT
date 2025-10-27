@@ -616,6 +616,16 @@ if menu == "Input Data":
             "Total PAGU": total_PAGU,
             "Nama OPD Penanggung Jawab Bantuan": nama_opd
         }])
+    ], ignore_index=True)
+    try:
+        # 🟩 Tambahkan ke Google Sheet
+        if sheet:
+            sheet.append_row(new_data, value_input_option="USER_ENTERED")
+            st.success("✅ Data berhasil disimpan ke Google Sheet!")
+        else:
+            st.error("⚠️ Tidak dapat menyimpan ke Google Sheet (sheet belum aktif).")
+    except Exception as e:
+        st.error(f"❌ Gagal menyimpan ke Google Sheet: {e}")
         st.session_state.data_bantuan = pd.concat(
             [st.session_state.data_bantuan, new_data], ignore_index=True
         )
@@ -863,6 +873,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
