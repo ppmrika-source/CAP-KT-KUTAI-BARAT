@@ -121,7 +121,7 @@ try:
     creds_dict = st.secrets["gcp_service_account"]  # dari secrets.toml
     credentials = Credentials.from_service_account_info(creds_dict, scopes=SCOPE)
     client = gspread.authorize(credentials)
-    SHEET_URL = "https://docs.google.com/spreadsheets/d/1YOUR_SHEET_ID/edit"  # ganti ID-nya
+    SHEET_URL = "https://docs.google.com/spreadsheets/d/1_ffZ-7UYfYhcHfy3ut7EsL48BeZpvYFr/edit?usp=drive_link&ouid=117122605312600804617&rtpof=true&sd=true"
     sheet = client.open_by_url(SHEET_URL).worksheet("DataBantuan")
     st.sidebar.success("✅ Terhubung ke Google Sheet")
 except Exception as e:
@@ -840,6 +840,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
