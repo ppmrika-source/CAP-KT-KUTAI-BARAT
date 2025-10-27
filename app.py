@@ -239,7 +239,7 @@ if "data_bantuan" not in st.session_state:
         "Program", "Kegiatan", "Sub Kegiatan","Kecamatan","Kampung",
         "Nama Individu", "NIK Individu",  
         "Nama Kelompok/UMKM", "Nama Pengurus & Anggota","Nomor Registrasi/No. Akta Notaris Kelompok",
-        "Jenis Bantuan", "Rincian Bantuan", "Jumlah Bantuan", "Total Realisasi PAGU"
+        "Jenis Bantuan", "Rincian Bantuan", "Jumlah Bantuan", "Total Realisasi PAGU, "Nama OPD Penanggung Jawab Bantuan"
     ])
 
 # -----------------------------
@@ -478,6 +478,62 @@ if menu == "Input Data":
             "Tendiq",
         ]
     }
+    # ===============================
+    # Daftar OPD penanggung jawab
+    # ===============================
+    DAFTAR_OPD = [
+      "Badan Perencanaan Pembangunan Penelitian & Pengembangan Daerah",
+        "Badan Pendapatan Daerah",
+        "Badan Kepegawaian dan Pengembangan Sumber Daya Manusia",
+        "Badan Keuangan dan Aset Daerah",
+        "Badan Kesatuan Bangsa dan Politik",
+        "Badan Penanggulangan Bencana Daerah",
+        "Inspektorat Daerah",
+        "Dinas Pendidikan dan Kebudayaan",
+        "Dinas Kesehatan",
+        "Dinas Pekerjaan Umum dan Penataan Ruang",
+        "Dinas Perumahan, Kawasan Pemukiman dan Pertanahan",
+        "Satuan Polisi Pamong Praja",
+        "Dinas Sosial",
+        "Dinas Pengendalian Penduduk, Keluarga Berencana, Pemberdayaan Perempuan dan Perlindungan Anak",
+        "Dinas Tenaga Kerja dan Transmigrasi",
+        "Dinas Kependudukan dan Pencatatan Sipil",
+        "Dinas Pemberdayaan Masyarakat dan Kampung",
+        "Dinas Perhubungan",
+        "Dinas Komunikasi dan Informatika",
+        "Dinas Penanaman Modal dan Pelayanan Terpadu Satu Pintu",
+        "Dinas Pemuda dan Olahraga",
+        "Dinas Arsip dan Perpustakaan",
+        "Dinas Ketahanan Pangan",
+        "Dinas Lingkungan Hidup",
+        "Dinas Perdagangan, Koperasi, Usaha Kecil dan Menengah",
+        "Dinas Pariwisata",
+        "Dinas Pertanian",
+        "Dinas Perikanan",
+        "UPT Revitalisasi Perkebunan",
+        "UPT Agrobisnis Pertanian",
+        "UPTD Balai Benih Ikan Mentiwan",
+        "Bongan",
+        "Jempang",
+        "Penyinggahan",
+        "Muara Pahu",
+        "Damai",
+        "Melak",
+        "Barong Tongkok",
+        "Sekolaq Darat",
+        "Mook Manaar Bulatn",
+        "Tering",
+        "Nyuatan",
+        "Bentian Besar",
+        "Linggang Bigung",
+        "Siluq Ngurai",
+        "Long Iram",
+        "Muara Lawa"
+    ]
+    # ===============================
+    # Form Input
+    # ===============================
+    unit_kerja = st.selectbox("Unit Kerja Pengupload", UNIT_KERJA)
 
     col1, col2 = st.columns(2)
 
@@ -501,7 +557,7 @@ if menu == "Input Data":
 
     jumlah_bantuan = st.number_input("Jumlah Bantuan (Rp)", min_value=0, step=1000)
     total_PAGU = st.number_input("Total Penyerapan PAGU (Rp)", min_value=0, step=1000)
-
+    nama_opd = st.selectbox("Nama OPD Penanggung Jawab Bantuan", DAFTAR_OPD)
     if st.button("💾 Simpan Data"):
         new_data = pd.DataFrame([{
             "Program": program,
@@ -518,6 +574,7 @@ if menu == "Input Data":
             "Rincian Bantuan": rincian_bantuan,
             "Jumlah Bantuan": jumlah_bantuan,
             "Total PAGU": total_PAGU
+            "Nama OPD Penanggung Jawab Bantuan": nama_opd
         }])
         st.session_state.data_bantuan = pd.concat(
             [st.session_state.data_bantuan, new_data], ignore_index=True
@@ -766,6 +823,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
