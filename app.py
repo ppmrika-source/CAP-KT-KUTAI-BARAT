@@ -616,7 +616,6 @@ if menu == "Input Data":
             "Total PAGU": total_PAGU,
             "Nama OPD Penanggung Jawab Bantuan": nama_opd
         }])
-    ], ignore_index=True)
     try:
         # 🟩 Tambahkan ke Google Sheet
         if sheet:
@@ -873,6 +872,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
