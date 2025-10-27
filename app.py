@@ -6,6 +6,20 @@ import os
 
 import gspread
 from google.oauth2.service_account import Credentials
+SCOPE = [
+    "https://spreadsheets.google.com/feeds",
+    "https://www.googleapis.com/auth/drive"
+]
+try:
+    creds_dict = st.secrets["gcp_service_account"]  # dari secrets.toml
+    credentials = Credentials.from_service_account_info(creds_dict, scopes=SCOPE)
+    client = gspread.authorize(credentials)
+
+    # ⚠️ Ganti URL ini dengan link GSheet kamu sendiri (sudah kamu isi benar)
+    SHEET_URL = "https://docs.google.com/spreadsheets/d/1_ffZ-7UYfYhcHfy3ut7EsL48BeZpvYFr/edit?gid=1114012059#gid=1114012059"
+    
+    # Pastikan nama worksheet sesuai dengan tab di Google Sheet kamu
+    sheet = client.open_by_url(https://docs.google.com/spreadsheets/d/1_ffZ-7UYfYhcHfy3ut7EsL48BeZpvYFr/edit?gid=1114012059#gid=1114012059).worksheet("DataBantuan")
 import streamlit as st
 from authlib.integrations.requests_client import OAuth2Session
 
@@ -840,6 +854,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
