@@ -573,7 +573,7 @@ if menu == "Input Data":
             "Jenis Bantuan": jenis_bantuan,
             "Rincian Bantuan": rincian_bantuan,
             "Jumlah Bantuan": jumlah_bantuan,
-            "Total PAGU": total_PAGU
+            "Total PAGU": total_PAGU,
             "Nama OPD Penanggung Jawab Bantuan": nama_opd
         }])
         st.session_state.data_bantuan = pd.concat(
@@ -823,6 +823,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
