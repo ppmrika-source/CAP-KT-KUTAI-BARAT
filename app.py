@@ -23,9 +23,14 @@ try:
     st.sidebar.success(f"✅ Terhubung ke Google Sheet: {sheet.title}")
 
 except Exception as e:
-    st.sidebar.error(f"⚠️ Gagal konek ke Google Sheet: {e}")
+  # ⛔️ Ganti bagian ini dengan versi lebih detail
+    st.sidebar.error(f"⚠️ Gagal konek ke Google Sheet: {type(e).__name__} - {e}")
     sheet = None
-
+# 🔍 Tambahkan juga ini di bawah untuk memastikan koneksi aktif
+if sheet:
+    st.sidebar.write("✅ Worksheet aktif:", sheet.title)
+else:
+    st.sidebar.error("❌ Belum terkoneksi ke worksheet!")
 
     sheet = None
 import streamlit as st
@@ -877,6 +882,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
