@@ -552,7 +552,7 @@ if menu == "Input Data":
         nama_kelompok = st.text_input("Nama Kelompok / UMKM")
         pengurus_anggota = st.text_area("Nama Pengurus & Anggota Kelompok")
         nik_kelompok = st.text_input("Nomor Registrasi/No. Akta Notaris Kelompok")
-        jenis_bantuan = st.selectbox("Jenis Bantuan", ["Modal Usaha", "Alat Produksi", "Pelatihan", "Beasiswa", "Bantuan Tunai", "Bantuan Rumah Layak Huni", "Lainnya"])
+        jenis_bantuan = st.selectbox("Jenis Bantuan", ["Modal Usaha", "Bibit & Pupuk dan/atau bahan penunjang pertanian lainnya", "Pupuk dan/atau bahan penunjang pertanian lainnya", "Bibi sayur/buah/pohon", "Hewan Ternak", "Alat Produksi", "Pelatihan", "Beasiswa", "Bantuan Tunai", "Bantuan Rumah Layak Huni", "Lainnya"])
         rincian_bantuan = st.text_area("Rincian Bantuan")
 
     jumlah_bantuan = st.number_input("Jumlah Bantuan (Rp)", min_value=0, step=1000)
@@ -823,6 +823,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
