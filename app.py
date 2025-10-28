@@ -144,7 +144,7 @@ if st.sidebar.button("🚪 Logout"):
 # 🔵 Konfigurasi koneksi ke Google Sheet
 import gspread
 from google.oauth2.service_account import Credentials
-
+zaqww
 SCOPE = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 
 try:
@@ -155,14 +155,7 @@ try:
     sheet = client.open_by_url(SHEET_URL).worksheet("Data Utama")
     st.sidebar.success("✅ Terhubung ke Google Sheet")
 except Exception as e:
-    st.sidebar.error(f"⚠️ Gagal konek ke Google Sheet: {e}")
-    sheet = None
-# 🔍 Tes apakah worksheet benar-benar aktif
-if sheet:
-    st.sidebar.write("✅ Koneksi berhasil, worksheet aktif:", sheet.title)
-else:
-    st.sidebar.error("❌ Belum terkoneksi ke worksheet!")
-
+    
 # Alternatif: pakai markdown dengan warna
 st.sidebar.markdown(
     '<p style="color: black; font-weight:bold;">🚪 Logout</p>', 
@@ -894,6 +887,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
