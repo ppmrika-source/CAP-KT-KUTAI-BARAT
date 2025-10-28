@@ -696,7 +696,7 @@ with st.form("form_berbagi_data"):
 # ----------------------------
 if menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang Aplikasi")
-    st.markdown(
+
             st.success(f"✅ File '{nama_file}' berhasil diupload oleh {unit_kerja}.")
         else:
             st.error("⚠️ Harap unggah file sebelum submit.")
@@ -774,6 +774,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
