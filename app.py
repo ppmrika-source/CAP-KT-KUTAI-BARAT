@@ -665,7 +665,7 @@ with st.form("form_berbagi_data"):
                 "Gambaran Umum": gambaran_umum,
                 "Nama File Asli": uploaded_file.name
             })
-                        st.success(f"✅ File '{uploaded_file.name}' berhasil diupload oleh {unit_kerja}!")
+                st.success(f"✅ File '{uploaded_file.name}' berhasil diupload oleh {unit_kerja}!")
             else:
                 st.error("⚠️ Harap isi semua field dan unggah file sebelum submit.")
 
@@ -774,6 +774,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
