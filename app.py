@@ -750,8 +750,8 @@ st.dataframe(st.session_state.data_bantuan, use_container_width=True)
 if not st.session_state.data_bantuan.empty:
     csv = st.session_state.data_bantuan.to_csv(index=False).encode("utf-8")
     st.download_button("⬇️ Download Data (CSV)", csv, "data_bantuan.csv", "text/csv")
-    else:
-        st.info("Belum ada data yang tersimpan.")
+else:
+    st.info("Belum ada data yang tersimpan.")
 
 # -----------------------------
 # MENU: STATISTIK
@@ -994,6 +994,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
