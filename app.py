@@ -489,8 +489,6 @@ if menu == "Input Data":
         jenis_bantuan = st.selectbox("Jenis Bantuan", ["Modal Usaha", "Alat Produksi", "Bibit Sayur atau Pohon", "Bibit & Pupuk dan/atau material pendukung peningkatan kualitas lahan tani", "Pupuk dan/atau material pendukung peningkatan kualitas lahan tani", "Pelatihan","Hewan Ternak", "Beasiswa", "Bantuan Tunai", "Bantuan Rumah Layak Huni", "Lainnya (jelaskan pada kolom rincian bantuan)"])
         rincian_bantuan = st.text_area("Rincian Bantuan")
 
-   import streamlit as st
-
 # Input sebagai teks, bisa tulis: Rp 1.234.567,89
 jumlah_input = st.text_input("Jumlah Bantuan (Rp)")
 
@@ -806,6 +804,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
