@@ -506,7 +506,7 @@ total_PAGU = st.number_input(
 )
 
 
-    if st.button("💾 Simpan Data"):
+if st.button("💾 Simpan Data"):
         new_data = pd.DataFrame([{
             "Program": program,
             "Kegiatan": kegiatan,
@@ -802,6 +802,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
