@@ -679,7 +679,7 @@ with st.form("form_berbagi_data"):
         st.dataframe(df_upload, use_container_width=True)
 
         # Tombol download file asli
-  st.subheader("⬇️ Download File Asli")
+st.subheader("⬇️ Download File Asli")
 
 if "data_upload" in st.session_state and st.session_state["data_upload"]:
     df_upload = pd.DataFrame(st.session_state["data_upload"])
@@ -784,6 +784,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
