@@ -10,7 +10,15 @@ from google.oauth2.service_account import Credentials
 # 🔴 Tambahkan koneksi Firebase di bawah ini
 import firebase_admin
 from firebase_admin import credentials as fb_credentials, firestore
+import ast
 
+# Misal kamu simpan di st.secrets["firebase"]
+firebase_cred_dict = st.secrets["firebase"]  # pastikan ini sudah dict, bukan string JSON
+
+cred = credentials.Certificate(firebase_cred_dict)
+firebase_admin.initialize_app(cred)
+
+db = firestore.client()
 # =============================
 # 🌐 KONFIGURASI GOOGLE SHEET
 # =============================
@@ -943,6 +951,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
