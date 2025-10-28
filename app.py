@@ -489,21 +489,25 @@ if menu == "Input Data":
         jenis_bantuan = st.selectbox("Jenis Bantuan", ["Modal Usaha", "Alat Produksi", "Bibit Sayur atau Pohon", "Bibit & Pupuk dan/atau material pendukung peningkatan kualitas lahan tani", "Pupuk dan/atau material pendukung peningkatan kualitas lahan tani", "Pelatihan","Hewan Ternak", "Beasiswa", "Bantuan Tunai", "Bantuan Rumah Layak Huni", "Lainnya (jelaskan pada kolom rincian bantuan)"])
         rincian_bantuan = st.text_area("Rincian Bantuan")
 
-    jumlah_bantuan = st.number_input(
-    "Jumlah Bantuan (Rp)", 
-    min_value=0.0, 
-    max_value=1_000_000_000_000_000.0,  # hingga triliunan
-    step=0.01, 
-    format="%.2f"  # 2 desimal
-)
+   import streamlit as st
 
-total_PAGU = st.number_input(
-    "Total PAGU (Rp)", 
-    min_value=0.0, 
-    max_value=1_000_000_000_000_000.0,  # hingga triliunan
-    step=0.01, 
-    format="%.2f"  # 2 desimal
-)
+# Input sebagai teks, bisa tulis: Rp 1.234.567,89
+jumlah_input = st.text_input("Jumlah Bantuan (Rp)")
+
+def parse_rupiah(text):
+    if not text:
+        return 0.0
+    # Hapus semua karakter non-digit kecuali koma dan titik
+    text = text.replace("Rp", "").replace(" ", "").replace(".", "").replace(",", ".")
+    try:
+        return float(text)
+    except:
+        return 0.0
+
+jumlah_bantuan = parse_rupiah(jumlah_input)
+
+st.write(f"Nilai yang dibaca: {jumlah_bantuan:,.2f} (angka float)")
+
 
 
 if st.button("💾 Simpan Data"):
@@ -802,6 +806,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
