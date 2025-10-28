@@ -676,7 +676,7 @@ if menu == "Input Data":
         st.error(f"❌ Gagal menyimpan ke Firebase: {e}")
 
     # Simpan juga ke session_state untuk ditampilkan di "Lihat Data"
-   st.session_state.data_bantuan = pd.concat(
+    st.session_state.data_bantuan = pd.concat(
     [st.session_state.data_bantuan, new_data], ignore_index=True
     )
 try:
@@ -943,6 +943,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
