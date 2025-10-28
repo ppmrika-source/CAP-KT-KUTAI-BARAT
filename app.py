@@ -518,9 +518,19 @@ def parse_rupiah(text):
         return float(text)
     except:
         return 0.0
+# -----------------------------
+# Input Jumlah Bantuan
+# -----------------------------
+jumlah_input = st.text_input("Jumlah Bantuan (Rp)")
+jumlah_bantuan = parse_rupiah(jumlah_input)
+st.write(f"Jumlah Bantuan: Rp {jumlah_bantuan:,.2f} (angka float)")
 
-total_pagu = parse_rupiah(jumlah_input)
-st.write(f"Nilai yang dibaca: {total_PAGU:,.2f} (angka float)")
+# -----------------------------
+# Input Total PAGU
+# -----------------------------
+pagu_input = st.text_input("Total PAGU (Rp)")
+total_PAGU = parse_rupiah(pagu_input)
+st.write(f"Total PAGU: Rp {total_PAGU:,.2f} (angka float)")
 
 if st.button("💾 Simpan Data"):
         new_data = pd.DataFrame([{
@@ -818,6 +828,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
