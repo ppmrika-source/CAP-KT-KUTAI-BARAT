@@ -154,8 +154,7 @@ try:
     SHEET_URL = "https://docs.google.com/spreadsheets/d/1_ffZ-7UYfYhcHfy3ut7EsL48BeZpvYFr/edit?gid=1114012059#gid=1114012059"
     sheet = client.open_by_url(SHEET_URL).worksheet("Data Utama")
     st.sidebar.success("✅ Terhubung ke Google Sheet")
-
-    
+except KeyError:    
 # Alternatif: pakai markdown dengan warna
 st.sidebar.markdown("❌ Konfigurasi belum diatur di Secrets Streamlit Cloud.")
     st.stop()
@@ -889,6 +888,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
