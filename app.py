@@ -15,10 +15,10 @@ try:
     client = gspread.authorize(credentials)
 
     # ✅ Ganti dengan URL Google Sheet kamu (tanpa bagian ?gid=...)
-    SHEET_URL = "https://docs.google.com/spreadsheets/d/1561ljE1kzoduVeWiz_2UegA4j7kaXN7AKsIXcoQ75d0"
+    SHEET_URL = "https://docs.google.com/spreadsheets/d/1sywZYumMnK4n1rUqXf_MTUp5ueblJ0oz7CVfM0ZS62M"
 
     # ✅ Ganti "Data Utama" dengan nama TAB yang benar di Google Sheet kamu
-    sheet = client.open_by_url("https://docs.google.com/spreadsheets/d/1561ljE1kzoduVeWiz_2UegA4j7kaXN7AKsIXcoQ75d0").worksheet("Sheet1")
+    sheet = client.open_by_url("https://docs.google.com/spreadsheets/d/1sywZYumMnK4n1rUqXf_MTUp5ueblJ0oz7CVfM0ZS62M").worksheet("Sheet1")
 
     st.sidebar.success(f"✅ Terhubung ke Google Sheet: {sheet.title}")
 
@@ -883,6 +883,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
