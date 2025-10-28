@@ -679,9 +679,11 @@ with st.form("form_berbagi_data"):
         st.dataframe(df_upload, use_container_width=True)
 
         # Tombol download file asli
-    st.subheader("⬇️ Download File Asli")
-    if "data_upload" in st.session_state and st.session_state.data_upload:
-        df_upload = pd.DataFrame(st.session_state.data_upload)
+  st.subheader("⬇️ Download File Asli")
+
+if "data_upload" in st.session_state and st.session_state["data_upload"]:
+    df_upload = pd.DataFrame(st.session_state["data_upload"])
+
     if "Nama File Asli" in df_upload.columns:
         for idx, row in df_upload.iterrows():
             file_path = os.path.join(UPLOAD_DIR, row["Nama File Asli"])
@@ -691,9 +693,13 @@ with st.form("form_berbagi_data"):
                     label=f"Download {row['Nama File Asli']}",
                     data=open(file_path, "rb").read(),
                     file_name=row["Nama File Asli"]
-    )
+                )
+            else:
+                st.warning(f"File {row['Nama File Asli']} tidak ditemukan di server.")
     else:
-        st.warning(f"File {row['Nama File Asli']} tidak ditemukan di server.")
+        st.info("Belum ada file yang diupload.")
+else:
+    st.info("Belum ada file yang diupload.")
 
 # ----------------------------
 # HALAMAN TENTANG APLIKASI
@@ -778,6 +784,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
