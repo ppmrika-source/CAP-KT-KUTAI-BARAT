@@ -744,7 +744,7 @@ except Exception as e:
 
 st.dataframe(df, use_container_width=True)
 st.header("📑 Data Bantuan Tersimpan")
-    st.dataframe(st.session_state.data_bantuan, use_container_width=True)
+st.dataframe(st.session_state.data_bantuan, use_container_width=True)
 
     # Tombol download
     if not st.session_state.data_bantuan.empty:
@@ -994,6 +994,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
