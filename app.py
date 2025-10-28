@@ -507,7 +507,7 @@ jumlah_bantuan = parse_rupiah(jumlah_input)
 st.write(f"Nilai yang dibaca: {jumlah_bantuan:,.2f} (angka float)")
 
 # Input sebagai teks, bisa tulis: Rp 1.234.567,89
-jumlah_input = st.text_input("Total PAGU (Rp)")
+jumlah_input = st.text_input("total PAGU (Rp)")
 
 def parse_rupiah(text):
     if not text:
@@ -520,7 +520,7 @@ def parse_rupiah(text):
         return 0.0
 
 jumlah_bantuan = parse_rupiah(jumlah_input)
-st.write(f"Nilai yang dibaca: {Total_PAGU:,.2f} (angka float)")
+st.write(f"Nilai yang dibaca: {total_PAGU:,.2f} (angka float)")
 
 if st.button("💾 Simpan Data"):
         new_data = pd.DataFrame([{
@@ -818,6 +818,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
