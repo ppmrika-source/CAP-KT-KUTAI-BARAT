@@ -712,6 +712,9 @@ with st.form("form_berbagi_data"):
             # 2️⃣ Simpan metadata ke session_state
             # -----------------------------
             # Simpan ke session state
+            if "data_upload" not in st.session_state:
+                st.session_state["data_upload"] = []
+
             st.session_state["data_upload"].append({
                 "Nama Data": nama_data,
                 "Format Data": format_data,
@@ -724,28 +727,27 @@ with st.form("form_berbagi_data"):
             st.error("⚠️ Harap isi semua field dan unggah file sebelum submit.")
 
 # ----------------------------
-# HALAMAN DAFTAR FILE UPLOAD
+# 2️⃣ Halaman Daftar Upload dan Download
 # ----------------------------
-    if menu == "Daftar Upload":
-            st.title("📑 Daftar File yang Sudah Diupload")
-    if "data_upload" in st.session_state and st.session_state.data_upload:
+if menu == "Daftar Upload":
+    st.title("📑 Daftar File yang Sudah Diupload")
+# Tampilkan tabel data upload
+if "data_upload" in st.session_state and st.session_state.data_upload:
         df_upload = pd.DataFrame(st.session_state.data_upload)
         st.dataframe(df_upload, use_container_width=True)
 
         # Tombol download file asli
 st.subheader("⬇️ Download File Asli")
-
-if "data_upload" in st.session_state and st.session_state["data_upload"]:
-    df_upload = pd.DataFrame(st.session_state["data_upload"])
-
-    if "Nama File Asli" in df_upload.columns:
-        for idx, row in df_upload.iterrows():
-            file_path = os.path.join(UPLOAD_DIR, row["Nama File Asli"]) 
-            if os.path.exists(file_path):
-                st.download_button(
+UPLOAD_DIR = "uploaded_files"
+for idx, row in df_upload.iterrows():
+    file_path = os.path.join(UPLOAD_DIR, row["Nama File Asli"]) 
+    if os.path.exists(file_path):
+                # Gunakan key unik supaya tidak duplikasi ID
+                st.download_button( 
                     label=f"Download {row['Nama File Asli']}",
                     data=open(file_path, "rb").read(),
-                    file_name=row["Nama File Asli"]
+                    file_name=row["Nama File Asli"],
+                     key=f"download_{idx}"
                 )
             else:
                 st.warning(f"File {row['Nama File Asli']} tidak ditemukan di server.")
@@ -837,6 +839,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
