@@ -679,7 +679,7 @@ with st.form("form_berbagi_data"):
         st.dataframe(df_upload, use_container_width=True)
 
         # Tombol download file asli
-            st.subheader("⬇️ Download File Asli")
+        st.subheader("⬇️ Download File Asli")
         for idx, row in df_upload.iterrows():
             file_path = os.path.join(UPLOAD_DIR, row["Nama File Asli"])
             if os.path.exists(file_path):
@@ -774,6 +774,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
