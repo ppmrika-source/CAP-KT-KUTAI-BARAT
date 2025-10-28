@@ -8,17 +8,22 @@ import gspread
 from google.oauth2.service_account import Credentials
 
 # 🔴 Tambahkan koneksi Firebase di bawah ini
+import streamlit as st
 import firebase_admin
-from firebase_admin import credentials as fb_credentials, firestore
-import ast
+from firebase_admin import credentials, firestore
 
-# Misal kamu simpan di st.secrets["firebase"]
-firebase_cred_dict = st.secrets["firebase"]  # pastikan ini sudah dict, bukan string JSON
+# Ambil dict dari st.secrets
+firebase_cred_dict = st.secrets["firebase"]
 
+# Penting: ganti literal '\n' di private_key menjadi newline asli
+firebase_cred_dict["private_key"] = firebase_cred_dict["private_key"].replace("\\n", "\n")
+
+# Inisialisasi Firebase
 cred = credentials.Certificate(firebase_cred_dict)
 firebase_admin.initialize_app(cred)
 
 db = firestore.client()
+
 # =============================
 # 🌐 KONFIGURASI GOOGLE SHEET
 # =============================
@@ -951,6 +956,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
