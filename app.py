@@ -665,7 +665,21 @@ if menu == "Input Data":
             [st.session_state.data_bantuan, new_data], ignore_index=True
         )
         st.success("✅ Data berhasil disimpan!")
+# 🔴 Simpan ke Firebase
+    try:
+        if db:
+            db.collection("data_capkt").add(new_data)  # collection "data_capkt"
+            st.success("✅ Data berhasil disimpan ke Firebase!")
+        else:
+            st.warning("⚠️ Firebase belum terkoneksi, data tidak tersimpan di cloud.")
+    except Exception as e:
+        st.error(f"❌ Gagal menyimpan ke Firebase: {e}")
 
+    # Simpan juga ke session_state untuk ditampilkan di "Lihat Data"
+    st.session_state.data_bantuan = pd.concat(
+        [st.session_state.data_bantuan, pd.DataFrame([new_data])],
+        ignore_index=True
+    )
 
 # -----------------------------
 # MENU: LIHAT DATA
@@ -834,7 +848,21 @@ with st.form("upload_form"):
             st.success(f"✅ File '{nama_file}' berhasil diupload oleh {unit_kerja}.")
         else:
             st.error("⚠️ Harap unggah file sebelum submit.")
+# 🔴 Simpan ke Firebase
+    try:
+        if db:
+            db.collection("data_capkt").add(new_data)  # collection "data_capkt"
+            st.success("✅ Data berhasil disimpan ke Firebase!")
+        else:
+            st.warning("⚠️ Firebase belum terkoneksi, data tidak tersimpan di cloud.")
+    except Exception as e:
+        st.error(f"❌ Gagal menyimpan ke Firebase: {e}")
 
+    # Simpan juga ke session_state untuk ditampilkan di "Lihat Data"
+    st.session_state.data_bantuan = pd.concat(
+        [st.session_state.data_bantuan, pd.DataFrame([new_data])],
+        ignore_index=True
+    )
 # ----------------------------
 # TABEL DATA UPLOAD
 # ----------------------------
@@ -908,6 +936,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
