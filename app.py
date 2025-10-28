@@ -229,7 +229,7 @@ if "data_bantuan" not in st.session_state:
         "Program", "Kegiatan", "Sub Kegiatan","Kecamatan","Kampung",
         "Nama Individu", "NIK Individu",  
         "Nama Kelompok/UMKM", "Nama Pengurus & Anggota","Nomor Registrasi/No. Akta Notaris Kelompok",
-        "Jenis Bantuan", "Rincian Bantuan", "Jumlah Bantuan", "Total Realisasi PAGU"
+        "Jenis Bantuan", "Rincian Bantuan", "Jumlah Bantuan", "Total PAGU"
     ])
 
 # -----------------------------
@@ -506,7 +506,22 @@ jumlah_bantuan = parse_rupiah(jumlah_input)
 
 st.write(f"Nilai yang dibaca: {jumlah_bantuan:,.2f} (angka float)")
 
+# Input sebagai teks, bisa tulis: Rp 1.234.567,89
+jumlah_input = st.text_input("Jumlah PAGU (Rp)")
 
+def parse_rupiah(text):
+    if not text:
+        return 0.0
+    # Hapus semua karakter non-digit kecuali koma dan titik
+    text = text.replace("Rp", "").replace(" ", "").replace(".", "").replace(",", ".")
+    try:
+        return float(text)
+    except:
+        return 0.0
+
+jumlah_bantuan = parse_rupiah(jumlah_input)
+
+st.write(f"Nilai yang dibaca: {jumlah_PAGU:,.2f} (angka float)")
 
 if st.button("💾 Simpan Data"):
         new_data = pd.DataFrame([{
@@ -804,6 +819,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
