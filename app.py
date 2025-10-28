@@ -161,7 +161,6 @@ st.sidebar.markdown("❌ Konfigurasi belum diatur di Secrets Streamlit Cloud.")
     st.stop()
     '<p style="color: black; font-weight:bold;">🚪 Logout</p>', 
     unsafe_allow_html=True
-)
 
 # Script untuk membersihkan session ketika diklik
 if st.session_state.get("logout_clicked"):
@@ -888,6 +887,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
