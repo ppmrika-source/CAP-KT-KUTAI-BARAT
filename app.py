@@ -751,7 +751,7 @@ for idx, row in df_upload.iterrows():
                 )
 else:
                 st.warning(f"File {row['Nama File Asli']} tidak ditemukan di server.")
-    else:
+        else:
         st.info("Belum ada file yang diupload.")
 else:
     st.info("Belum ada file yang diupload.")
@@ -839,6 +839,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
