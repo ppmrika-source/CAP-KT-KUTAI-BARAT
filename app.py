@@ -756,7 +756,7 @@ else:
 # -----------------------------
 # MENU: STATISTIK
 # -----------------------------
-elif menu == "Statistik":
+if menu == "Statistik":
     st.header("📊 Statistik Data Bantuan")
 
     if not st.session_state.data_bantuan.empty:
@@ -994,6 +994,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
