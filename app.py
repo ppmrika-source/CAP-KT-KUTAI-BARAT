@@ -17,10 +17,10 @@ try:
     client = gspread.authorize(credentials)
 
     # ✅ Ganti dengan URL Google Sheet kamu (tanpa bagian ?gid=...)
-    SHEET_URL = "https://docs.google.com/spreadsheets/d/1EQ2pe2ZVfxUs38ajPG8oEDxWku-aPfSBGK-EnI3CJpg"
+    SHEET_URL = "https://docs.google.com/spreadsheets/d/1561ljE1kzoduVeWiz_2UegA4j7kaXN7AKsIXcoQ75d0"
 
     # ✅ Ganti "Data Utama" dengan nama TAB yang benar di Google Sheet kamu
-    sheet = client.open_by_url("https://docs.google.com/spreadsheets/d/1EQ2pe2ZVfxUs38ajPG8oEDxWku-aPfSBGK-EnI3CJpg").worksheet("Sheet1")
+    sheet = client.open_by_url("https://docs.google.com/spreadsheets/d/1561ljE1kzoduVeWiz_2UegA4j7kaXN7AKsIXcoQ75d0").worksheet("Sheet1")
 
     st.sidebar.success(f"✅ Terhubung ke Google Sheet: {sheet.title}")
 
@@ -144,7 +144,7 @@ if st.sidebar.button("🚪 Logout"):
 # 🔵 Konfigurasi koneksi ke Google Sheet
 import gspread
 from google.oauth2.service_account import Credentials
-zaqww
+
 SCOPE = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 
 try:
@@ -155,12 +155,19 @@ try:
     sheet = client.open_by_url(SHEET_URL).worksheet("Data Utama")
     st.sidebar.success("✅ Terhubung ke Google Sheet")
 except Exception as e:
-    
+    st.sidebar.error(f"⚠️ Gagal konek ke Google Sheet: {e}")
+    sheet = None
+# 🔍 Tes apakah worksheet benar-benar aktif
+if sheet:
+    st.sidebar.write("✅ Koneksi berhasil, worksheet aktif:", sheet.title)
+else:
+    st.sidebar.error("❌ Belum terkoneksi ke worksheet!")
+
 # Alternatif: pakai markdown dengan warna
-st.sidebar.markdown("❌ Konfigurasi belum diatur di Secrets Streamlit Cloud.")
-    st.stop()
+st.sidebar.markdown(
     '<p style="color: black; font-weight:bold;">🚪 Logout</p>', 
     unsafe_allow_html=True
+)
 
 # Script untuk membersihkan session ketika diklik
 if st.session_state.get("logout_clicked"):
@@ -623,15 +630,6 @@ if menu == "Input Data":
             "Nama OPD Penanggung Jawab Bantuan": nama_opd
         }])
     try:
-         # 🔹 Tambahkan validasi koneksi sheet di sini
-        if sheet:
-            try:
-                sheet.append_row(new_data, value_input_option="USER_ENTERED")
-                st.success("✅ Data berhasil disimpan ke Google Sheet!")
-            except Exception as e:
-                st.error(f"⚠️ Gagal menulis data ke Google Sheet: {e}")
-        else:
-            st.error("❌ Belum terkoneksi ke worksheet!")
         # 🟩 Tambahkan ke Google Sheet
         if sheet:
             sheet.append_row(new_data, value_input_option="USER_ENTERED")
@@ -887,11 +885,6 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
-
-
-
-
-
 
 
 
