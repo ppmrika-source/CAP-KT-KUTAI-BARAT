@@ -690,7 +690,7 @@ with st.form("form_berbagi_data"):
                     label=f"Download {row['Nama File Asli']}",
                     data=open(file_path, "rb").read(),
                     file_name=row["Nama File Asli"]
-                )
+        )
             else:
                 st.warning(f"File {row['Nama File Asli']} tidak ditemukan di server.")
     else:
@@ -780,6 +780,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
