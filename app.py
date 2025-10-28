@@ -520,7 +520,6 @@ def parse_rupiah(text):
         return 0.0
 
 jumlah_bantuan = parse_rupiah(jumlah_input)
-
 st.write(f"Nilai yang dibaca: {jumlah_PAGU:,.2f} (angka float)")
 
 if st.button("💾 Simpan Data"):
@@ -819,6 +818,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
