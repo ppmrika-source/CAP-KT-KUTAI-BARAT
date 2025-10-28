@@ -7,6 +7,13 @@ import os
 import gspread
 from google.oauth2.service_account import Credentials
 
+# 🔴 Tambahkan koneksi Firebase di bawah ini
+import firebase_admin
+from firebase_admin import credentials as fb_credentials, firestore
+
+# =============================
+# 🌐 KONFIGURASI GOOGLE SHEET
+# =============================
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive"
@@ -28,7 +35,23 @@ except Exception as e:
     # ⛔️ Versi detail biar tahu error aslinya
     st.sidebar.error(f"⚠️ Gagal konek ke Google Sheet: {type(e).__name__} - {e}")
     sheet = None
+# =============================
+# 🔥 KONFIGURASI FIREBASE
+# =============================
+try:
+    # Gunakan nama alias fb_credentials biar tidak tabrakan
+    firebase_cred = fb_credentials.Certificate(st.secrets["firebase"])
+    firebase_admin.initialize_app(firebase_cred)
+    db = firestore.client()
+    st.sidebar.success("✅ Firebase berhasil terhubung!")
+except Exception as e:
+    st.sidebar.error(f"⚠️ Gagal konek ke Firebase: {e}")
+    db = None
 
+
+# =============================
+# 🧩 SELANJUTNYA: KODE STREAMLIT KAMU
+# =============================
 # 🔍 Tambahkan ini untuk memastikan koneksi aktif
 if sheet:
     st.sidebar.write("✅ Worksheet aktif:", sheet.title)
@@ -885,6 +908,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
