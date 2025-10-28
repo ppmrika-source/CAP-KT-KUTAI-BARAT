@@ -8,6 +8,12 @@ import streamlit as st
 from authlib.integrations.requests_client import OAuth2Session
 
 # ----------------------------
+# FOLDER UNTUK UPLOAD FILE
+# ----------------------------
+UPLOAD_DIR = "uploaded_files"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+# ----------------------------
 # KONFIGURASI HALAMAN
 # ----------------------------
 st.set_page_config(
@@ -693,6 +699,18 @@ with st.form("form_berbagi_data"):
 
     if submitted:
         if uploaded_file is not None:
+            # -----------------------------
+            # 1️⃣ Simpan file asli ke folder uploaded_files
+            # -----------------------------
+            UPLOAD_DIR = "uploaded_files"
+            os.makedirs(UPLOAD_DIR, exist_ok=True)
+            file_path = os.path.join(UPLOAD_DIR, uploaded_file.name)
+            with open(file_path, "wb") as f:
+                f.write(uploaded_file.getbuffer())
+
+            # -----------------------------
+            # 2️⃣ Simpan metadata ke session_state
+            # -----------------------------
             # Simpan ke session state
             st.session_state["data_upload"].append({
                 "Nama Data": nama_data,
@@ -819,6 +837,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
