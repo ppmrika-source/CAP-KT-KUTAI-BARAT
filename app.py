@@ -6,6 +6,106 @@ from firebase_admin import credentials, firestore
 import gspread
 from google.oauth2.service_account import Credentials
 import os
+# ----------------------------
+# KONFIGURASI HALAMAN
+# ----------------------------
+st.set_page_config(
+    page_title="📊 CAP-KT (Cek Aktivitas & Program Kemiskinan Terpadu) Kutai Barat",
+    page_icon="📂",
+    layout="wide"
+)
+
+# ----------------------------
+# AMBIL DATA RAHASIA DARI secrets.toml
+# ----------------------------
+try:
+    client_id = st.secrets["google_oauth"]["client_id"]
+    client_secret = st.secrets["google_oauth"]["client_secret"]
+    redirect_uri = st.secrets["google_oauth"]["redirect_uri"]
+except KeyError:
+    st.error("❌ Konfigurasi Google OAuth belum diatur di Secrets Streamlit Cloud.")
+    st.stop()
+
+# ----------------------------
+# URL & KONSTANTA GOOGLE OAUTH
+# ----------------------------
+AUTH_URL = "https://accounts.google.com/o/oauth2/auth"
+TOKEN_URL = "https://oauth2.googleapis.com/token"
+USERINFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo"
+SCOPE = "openid email profile"
+
+# ----------------------------
+# FUNGSI PEMBANTU
+# ----------------------------
+def make_oauth_session(state=None):
+    return OAuth2Session(
+        client_id=client_id,
+        client_secret=client_secret,
+        redirect_uri=redirect_uri,
+        scope=SCOPE,
+        state=state
+    )
+
+# ----------------------------
+# PROSES LOGIN GOOGLE
+# ----------------------------
+if "email" not in st.session_state:
+    params = st.query_params
+    code = params.get("code")
+    error = params.get("error")
+
+    if error:
+        st.error(f"Login error: {error}")
+        st.stop()
+
+    if code:
+        try:
+            oauth = make_oauth_session()
+            token = oauth.fetch_token(
+                url=TOKEN_URL,
+                code=code,
+                grant_type="authorization_code",
+                redirect_uri=redirect_uri
+            )
+
+            headers = {"Authorization": f"Bearer {token['access_token']}"}
+            resp = oauth.get(USERINFO_URL, headers=headers)
+            userinfo = resp.json()
+
+            st.session_state.email = userinfo.get("email")
+            st.session_state.name = userinfo.get("name")
+
+            st.query_params.clear()
+            st.rerun()
+
+        except Exception as e:
+            st.error(f"Gagal login: {e}")
+            st.stop()
+
+    else:
+        oauth = make_oauth_session()
+        authorization_url, state = oauth.create_authorization_url(AUTH_URL)
+        st.title("🔐 Login Diperlukan")
+        st.markdown(f"[➡️ Login dengan Google]({authorization_url})")
+        st.stop()
+
+
+    # --- Tahap 1: Jika belum login, tampilkan tombol login ---
+else:
+        oauth = make_oauth_session()
+        authorization_url, state = oauth.create_authorization_url(AUTH_URL)       
+
+# ----------------------------
+# KONTEN APLIKASI SETELAH LOGIN
+# ----------------------------
+st.success(f"✅ Login berhasil sebagai {st.session_state.email}")
+
+st.markdown("### 🎉 Selamat datang di Aplikasi CAP-KT")
+st.write("Anda sudah berhasil login. Silakan lanjut ke fitur utama aplikasi.")
+# Tombol Logout
+if st.sidebar.button("🚪 Logout"):
+    st.session_state.clear()
+    st.rerun()
 
 st.set_page_config(page_title="📊 CAP-KT Kutai Barat", layout="wide")
 
@@ -175,3 +275,4 @@ elif menu == "Tentang":
     - Statistik interaktif
     - Export data ke CSV
     """)
+
