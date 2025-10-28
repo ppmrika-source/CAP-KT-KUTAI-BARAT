@@ -106,6 +106,115 @@ st.write("Anda sudah berhasil login. Silakan lanjut ke fitur utama aplikasi.")
 if st.sidebar.button("🚪 Logout"):
     st.session_state.clear()
     st.rerun()
+# Konfigurasi halaman
+# -------------------------
+st.set_page_config(
+    page_title="📊 CAP-KT (Cek Aktivitas & Program Kemiskinan Terpadu) Kutai Barat",
+    page_icon="📂",
+    layout="wide"
+)
+
+# -------------------------
+# Fungsi untuk background + overlay
+# -------------------------
+def add_bg_for_header(image_file):
+    import base64
+    with open(image_file, "rb") as f:
+        data = f.read()
+    encoded = base64.b64encode(data).decode()
+    
+    st.markdown(
+        f"""
+        <style>
+        /* Container khusus header dengan background */
+        .header-bg {{
+            background-image: url("data:image/png;base64,{encoded}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            padding: 40px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            position: relative;
+        }}
+
+        /* Overlay semi-transparent di header */
+        .header-bg::before {{
+            content: "";
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.18);
+            border-radius: 10px;
+            z-index: 0;
+        }}
+
+        /* Semua teks tetap biru */
+        .stApp, .stApp * {{
+            color: #2E86C1 !important;
+        }}
+
+        /* Label form tebal + latar putih */
+        label[data-baseweb="label"] {{
+            font-weight: bold !important;
+            color: #2E86C1 !important;
+            background-color: white !important;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }}
+        </style>
+
+        <div class="header-bg"></div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+# panggil background + overlay
+add_bg_for_header ("background2.png")
+
+# -------------------------
+# Header dengan Logo
+# -------------------------
+col1, col2, col3 = st.columns([1,6,1])
+
+with col1:
+    st.image("logo_kutai_barat.png", width=100)
+
+with col2:
+    st.markdown(
+        """
+        <h2 style='text-align: center; color: #FFFFFF;'>
+        📊 CAP-KT (Cek Aktivitas & Program Kemiskinan Terpadu) Kutai Barat
+        </h2>
+        <h4 style='text-align: center; color:F0F0F0;'>
+        Bappeda Litbang Kutai Barat
+        </h4>
+        """,
+        unsafe_allow_html=True
+    )
+
+with col3:
+    st.image("logo_cap_kt.png", width=100)
+# -------------------------
+# Deskripsi aplikasi
+# -------------------------
+st.markdown("Cek Aktivitas & Program Kemiskinan Terpadu untuk monitoring Penyaluran Bantuan secara **mudah & interaktif**.")
+
+# -------------------------
+# Menu navigasi
+# -------------------------
+menu = st.sidebar.selectbox(
+    "Pilih Menu:",
+    ["Input Data", "Lihat Data", "Analisis"]
+)
+
+if menu == "Input Data":
+    st.title("📝 Halaman Input Data")
+elif menu == "Lihat Data":
+    st.title("📂 Halaman Lihat Data")
+elif menu == "Analisis":
+    st.title("📈 Halaman Analisis Data")
 
 st.set_page_config(page_title="📊 CAP-KT Kutai Barat", layout="wide")
 
@@ -275,4 +384,5 @@ elif menu == "Tentang":
     - Statistik interaktif
     - Export data ke CSV
     """)
+
 
