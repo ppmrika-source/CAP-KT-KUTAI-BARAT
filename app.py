@@ -9,8 +9,10 @@ from google.oauth2.service_account import Credentials
 
 # 🔴 Tambahkan koneksi Firebase di bawah ini
 import streamlit as st
+import sqlite3
 import firebase_admin
 from firebase_admin import credentials, firestore
+
 
 # Ambil dict dari st.secrets
 firebase_cred_dict = st.secrets["firebase"]
@@ -665,6 +667,27 @@ if menu == "Input Data":
             "Total PAGU": total_PAGU,
             "Nama OPD Penanggung Jawab Bantuan": nama_opd
         }])
+    # 🔹 Simpan ke Firebase
+    try:
+        if db:
+            db.collection("data_capkt").add(new_data)
+            st.success("✅ Data berhasil disimpan di Firebase!")
+        else:
+            raise Exception("Firebase belum terkoneksi")
+    except Exception as e:
+        st.warning(f"⚠️ Firebase gagal, simpan ke SQLite. ({e})")
+        # 🔹 Simpan ke SQLite
+        c.execute("""
+            INSERT INTO bantuan VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+        """, tuple(new_data.values()))
+        conn.commit()
+        st.success("✅ Data berhasil disimpan di SQLite lokal!")
+
+    # 🔹 Simpan juga ke session_state
+    st.session_state.data_bantuan = pd.concat(
+        [st.session_state.data_bantuan, pd.DataFrame([new_data])],
+        ignore_index=True
+    )
     try:
         # 🟩 Tambahkan ke Google Sheet
         if sheet:
@@ -705,6 +728,21 @@ except Exception as e:
 # MENU: LIHAT DATA
 # -----------------------------
 if menu == "Lihat Data":
+    st.subheader("📑 Data Tersimpan")
+
+try:
+    if db:
+        # Ambil data dari Firebase
+        data_fb = [doc.to_dict() for doc in db.collection("data_capkt").stream()]
+        df = pd.DataFrame(data_fb)
+    else:
+        # Ambil data dari SQLite fallback
+        df = pd.read_sql_query("SELECT * FROM bantuan", conn)
+except Exception as e:
+    st.error(f"❌ Gagal ambil data: {e}")
+    df = pd.DataFrame()
+
+st.dataframe(df, use_container_width=True)
     st.header("📑 Data Bantuan Tersimpan")
     st.dataframe(st.session_state.data_bantuan, use_container_width=True)
 
@@ -956,6 +994,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
