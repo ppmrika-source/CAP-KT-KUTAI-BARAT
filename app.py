@@ -665,6 +665,38 @@ with st.form("form_berbagi_data"):
                 "Gambaran Umum": gambaran_umum,
                 "Nama File Asli": uploaded_file.name
             })
+                        st.success(f"✅ File '{uploaded_file.name}' berhasil diupload oleh {unit_kerja}!")
+            else:
+                st.error("⚠️ Harap isi semua field dan unggah file sebelum submit.")
+
+# ----------------------------
+# HALAMAN DAFTAR FILE UPLOAD
+# ----------------------------
+elif menu == "Daftar Upload":
+    st.title("📑 Daftar File yang Sudah Diupload")
+    if "data_upload" in st.session_state and st.session_state.data_upload:
+        df_upload = pd.DataFrame(st.session_state.data_upload)
+        st.dataframe(df_upload, use_container_width=True)
+
+        # Tombol download file asli
+        st.subheader("⬇️ Download File Asli")
+        for idx, row in df_upload.iterrows():
+            file_path = os.path.join(UPLOAD_DIR, row["Nama File Asli"])
+            if os.path.exists(file_path):
+                st.download_button(
+                    label=f"Download {row['Nama File Asli']}",
+                    data=open(file_path, "rb").read(),
+                    file_name=row["Nama File Asli"]
+                )
+    else:
+        st.info("Belum ada file yang diupload.")
+
+# ----------------------------
+# HALAMAN TENTANG APLIKASI
+# ----------------------------
+elif menu == "Tentang Aplikasi":
+    st.title("ℹ️ Tentang Aplikasi")
+    st.markdown(
             st.success(f"✅ File '{nama_file}' berhasil diupload oleh {unit_kerja}.")
         else:
             st.error("⚠️ Harap unggah file sebelum submit.")
@@ -742,6 +774,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
