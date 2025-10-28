@@ -676,11 +676,18 @@ if menu == "Input Data":
         st.error(f"❌ Gagal menyimpan ke Firebase: {e}")
 
     # Simpan juga ke session_state untuk ditampilkan di "Lihat Data"
-    st.session_state.data_bantuan = pd.concat(
-        [st.session_state.data_bantuan, pd.DataFrame([new_data])],
-        ignore_index=True
+   st.session_state.data_bantuan = pd.concat(
+    [st.session_state.data_bantuan, new_data], ignore_index=True
     )
-
+try:
+    if db:  # pastikan Firebase sudah terkoneksi
+        # Convert DataFrame row ke dict, lalu simpan
+        db.collection("data_bantuan").add(new_data.to_dict(orient="records")[0])
+        st.success("✅ Data berhasil tersimpan di Firebase!")
+    else:
+        st.warning("⚠️ Firebase belum terkoneksi, data hanya tersimpan di session.")
+except Exception as e:
+    st.error(f"❌ Gagal menyimpan ke Firebase: {e}")
 # -----------------------------
 # MENU: LIHAT DATA
 # -----------------------------
@@ -936,6 +943,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
