@@ -1,11 +1,12 @@
-import streamlit as st
 import pandas as pd
-import sqlite3
-import firebase_admin
-from firebase_admin import credentials, firestore
-import gspread
-from google.oauth2.service_account import Credentials
+import streamlit as st
+from authlib.integrations.requests_client import OAuth2Session
+import base64
 import os
+
+import streamlit as st
+from authlib.integrations.requests_client import OAuth2Session
+
 # ----------------------------
 # KONFIGURASI HALAMAN
 # ----------------------------
@@ -93,7 +94,9 @@ if "email" not in st.session_state:
     # --- Tahap 1: Jika belum login, tampilkan tombol login ---
 else:
         oauth = make_oauth_session()
-        authorization_url, state = oauth.create_authorization_url(AUTH_URL)       
+        authorization_url, state = oauth.create_authorization_url(AUTH_URL)
+
+        
 
 # ----------------------------
 # KONTEN APLIKASI SETELAH LOGIN
@@ -102,10 +105,12 @@ st.success(f"✅ Login berhasil sebagai {st.session_state.email}")
 
 st.markdown("### 🎉 Selamat datang di Aplikasi CAP-KT")
 st.write("Anda sudah berhasil login. Silakan lanjut ke fitur utama aplikasi.")
+
 # Tombol Logout
 if st.sidebar.button("🚪 Logout"):
     st.session_state.clear()
     st.rerun()
+
 # Konfigurasi halaman
 # -------------------------
 st.set_page_config(
@@ -216,173 +221,537 @@ elif menu == "Lihat Data":
 elif menu == "Analisis":
     st.title("📈 Halaman Analisis Data")
 
-st.set_page_config(page_title="📊 CAP-KT Kutai Barat", layout="wide")
 
-# ======================
-# 🔴 FIREBASE SETUP
-# ======================
-try:
-    # Ambil dict dari secrets
-    firebase_cred_dict = dict(st.secrets["firebase"])
-    firebase_cred_dict["private_key"] = firebase_cred_dict["private_key"].replace("\\n", "\n")
-    
-    cred = credentials.Certificate(firebase_cred_dict)
-    firebase_admin.initialize_app(cred)
-    db = firestore.client()
-    st.sidebar.success("✅ Firebase terhubung")
-except Exception as e:
-    st.sidebar.warning(f"⚠️ Firebase gagal: {e}")
-    db = None
 
-# ======================
-# 🔵 SQLITE LOCAL
-# ======================
-conn = sqlite3.connect("data_local.db", check_same_thread=False)
-c = conn.cursor()
-# Buat tabel jika belum ada
-c.execute("""
-CREATE TABLE IF NOT EXISTS bantuan(
-    Program TEXT, Kegiatan TEXT, Sub_Kegiatan TEXT,
-    Nama_Individu TEXT, NIK_Individu TEXT,
-    Kecamatan TEXT, Kampung TEXT,
-    Nama_Kelompok TEXT, Pengurus_Anggota TEXT,
-    No_Akta TEXT,
-    Jenis_Bantuan TEXT, Rincian_Bantuan TEXT,
-    Jumlah_Bantuan REAL, Total_PAGU REAL,
-    OPD TEXT
-)
-""")
-conn.commit()
-
-# ======================
-# 🔵 GOOGLE SHEET SETUP
-# ======================
-sheet = None
-try:
-    SCOPE = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
-    creds_dict = st.secrets["gcp_service_account"]
-    credentials_gs = Credentials.from_service_account_info(creds_dict, scopes=SCOPE)
-    client = gspread.authorize(credentials_gs)
-    SHEET_URL = st.secrets.get("sheet_url")
-    if SHEET_URL:
-        sheet = client.open_by_url(SHEET_URL).sheet1
-        st.sidebar.success(f"✅ Terhubung ke Google Sheet: {sheet.title}")
-except Exception as e:
-    st.sidebar.warning(f"⚠️ Google Sheet gagal: {e}")
-    sheet = None
-
-# ======================
-# 📑 SESSION STATE
-# ======================
+# Inisialisasi session state
 if "data_bantuan" not in st.session_state:
     st.session_state.data_bantuan = pd.DataFrame(columns=[
-        "Program", "Kegiatan", "Sub Kegiatan", "Nama Individu", "NIK Individu",
-        "Kecamatan", "Kampung", "Nama Kelompok", "Pengurus_Anggota",
-        "No_Akta", "Jenis Bantuan", "Rincian Bantuan",
-        "Jumlah_Bantuan", "Total_PAGU", "OPD"
+        "Program", "Kegiatan", "Sub Kegiatan","Kecamatan","Kampung",
+        "Nama Individu", "NIK Individu",  
+        "Nama Kelompok/UMKM", "Nama Pengurus & Anggota","Nomor Registrasi/No. Akta Notaris Kelompok",
+        "Jenis Bantuan", "Rincian Bantuan", "Jumlah Bantuan", "Total Realisasi PAGU"
     ])
 
-# ======================
-# MENU NAVIGASI
-# ======================
-menu = st.sidebar.selectbox("Pilih Menu", ["Input Data", "Lihat Data", "Statistik", "Tentang"])
+# -----------------------------
+# MENU: INPUT DATA
+# -----------------------------
 if menu == "Input Data":
-    st.header("✍️ Input Data Bantuan")
-    
+    st.header("✍️ Form Input Data Bantuan")
+
+    # Data kecamatan → kampung (contoh)
+    DATA_WILAYAH = {
+        "Barong Tongkok": [
+            "Asa",
+            "Balok Asa",
+            "Barong Tongkok",
+            "Belempung Ulaq",
+            "Engkuni Pasek", 
+            "Belempung Ulaq",
+            "Geleo Asa",
+            "Geleo Baru", 
+            "Belempung Ulaq",
+            "Geleo Asa",
+            "Geleo Baru", 
+            "Gemuruh Asa",
+            "Juaq Asa",
+            "Juhan Asa",
+            "Mencimai",
+            "Muara Asa",
+            "Ngenyan Asa",
+            "Ombau Asa",
+            "Ongko Asa",
+            "Pepas Asa",
+            "Rejo Basuki",
+            "Sendawar",
+            "Simpang Raya",
+            "Sumber Sari",
+        ],
+        "Bentian Besar": [
+            "Anan Jaya",
+            "Dilang Puti",
+            "Jelum Sibak",
+            "Penarung",
+            "Randa Empas",
+            "Sambung",
+            "Suakong",
+            "Tende",
+            "Tukoq",
+        ],
+        "Bongan": [
+            "Bukit Harapan",
+            "Deraya",
+            "Gerungung",
+            "Jambuk",
+            "Jambuk Makmur",
+            "Lemper", 
+            "Muara Gusik",
+            "Muara Kedang",
+            "Muara Siram", 
+            "Penawai",
+            "Pereng Taliq",
+            "Resak", 
+            "Siram Jaya",
+            "Siram Makmur",
+            "Tanjung Sari",
+            "Tanjung Soke",
+        ],
+        "Damai": [
+            "Benung",
+            "Bermai",
+            "Besiq",
+            "Damai Kota",
+            "Damai Seberang", 
+            "Jengan Danum",
+            "Keay",
+            "Kelian", 
+            "Lumpat Dahuq",
+            "Mantar",
+            "Mendika", 
+            "Muara Bomboy",
+            "Muara Niliq",
+            "Muara Nyahing",
+            "Muara Tokong",
+            "Sempatn",
+            "Tapulang",
+        ],
+        "Jempang": [
+            "Tanjung Isuy",
+            "Tanjung Jan",
+            "Tanjung Jone",
+            "Bekokong Makmur",
+            "Lembonah",
+            "Mancong",
+            "Muara Nayan",
+            "Muara Ohong", 
+            "Muara Tae",
+            "Pentat",
+            "Perigiq", 
+            "Pulau Lanting",
+        ],
+        "Muara Lawa": [
+            "Benggeris",
+            "Cempedes",
+            "Dingin",
+            "Lambing",
+            "Lotaq", 
+            "Muara Begai",
+            "Muara Lawa",
+            "Payang", 
+        ],
+        "Penyinggahan": [
+            "Loa Deras",
+            "Minta",
+            "Tanjung Haur",
+            "Penyinggahan Ilir",
+            "Penyinggahan Ulu",
+            "Bakung"
+        ],
+        "Muara Pahu": [
+            "Dasaq",
+            "Gunung Bayan",
+            "Jerang Dayak",
+            "Jerang Melayu",
+            "Mendung", 
+            "Muara Baroh",
+            "Muara Beloan",
+            "Sebelang", 
+            "Tanjung Laong",
+            "Tanjung Pagar",
+            "Teluk Tempudau", 
+            "Tepain Ulaq",
+        ],
+        "Melak": [
+            "Empas",
+            "Empakuq",
+            "Muara Bunyut",
+            "Melak Ilir",
+            "Melak Ulu",
+            "Muara Benangaq"
+        ],
+        "Mook Manaar Bulatn": [
+            "Abit",
+            "Gadur",
+            "Gemuruh",
+            "Gunung Rampah",
+            "Jengan", 
+            "Karangan",
+            "Kelumpang", 
+            "Linggang Marimun",
+            "Linggang Muara Batuq",
+            "Merayaq", 
+            "Muara Jawaq",
+            "Muara Kalaq",
+            "Rembayan",
+            "Sakaq Lotoq",
+            "Sakaq Tada",
+            "Tondoh",
+        ],
+        "Nyuatan": [
+            "Awai",
+            "Dempar",
+            "Intu Lingau",
+            "Jontai",
+            "Lakan Bilem", 
+            "Mu'ut",
+            "Sembuan",
+            "Sentalar", 
+            "Temula",
+            "Terajuk",
+        ],
+        "Linggang Bigung": [
+            "Linggang Amer",
+            "Linggang Bangunsari",
+            "Linggang Bigung",
+            "Linggang Bigung Baru",
+            "Linggang Kebut", 
+            "Linggang Mapan",
+            "Linggang Melapeh",
+            "Linggang Melapeh Baru", 
+            "Linggang Mencelew",
+            "Linggang Purwodadi",
+            "Linggang Tutung",
+        ],
+        "Long Iram": [
+            "Anah",
+            "Kelian Luar",
+            "Keliwai",
+            "Linggang Muara Leban",
+            "Long Daliq", 
+            "Long Iram Bayan",
+            "Long Iram Ilir",
+            "Long Iram Kota", 
+            "Long Iram Seberang",
+            "Sukomulyo",
+            "Ujoh Halang",        
+        ],
+        "Sekolaq Darat": [
+            "Leleng",
+            "Sekolaq Darat",
+            "Sekolaq Joleq",
+            "Sekolaq Muliaq",
+            "Sekolaq Oday", 
+            "Sumber Bangun",
+            "Srimulyo",
+            "Sumber Rejo", 
+        ],
+        "Tering": [
+            "Kelian Dalam",
+            "Linggang Banjarejo",
+            "Linggang Jelemuq",
+            "Linggang Kelubaq",
+            "Linggang Muara Mujan", 
+            "Linggang Muyub Ilir",
+            "Linggang Purworejo",
+            "Linggang Tering Seberang", 
+            "Muyub Aket",
+            "Muyub Ulu",
+            "Tering Baru",
+            "Tering Lama",
+            "Tering Lama Ulu",
+            "Tukul", 
+        ],
+        "Siluq Ngurai": [
+            "Bentas",
+            "Betung",
+            "Kaliq",
+            "Kendisiq",
+            "Kenyanyan", 
+            "Kiaq",
+            "Lendian Liang Nayuq",
+            "Muara Ponaq", 
+            "Muhur",
+            "Penawang",
+            "Rikong",
+            "Sang-Sang",
+            "Tanah Mea",
+            "Tebisaq", 
+            "Tendiq",
+        ]
+    }
+
     col1, col2 = st.columns(2)
+
     with col1:
         program = st.text_input("Program")
         kegiatan = st.text_input("Kegiatan")
         sub_kegiatan = st.text_input("Sub Kegiatan")
-        nama_individu = st.text_input("Nama Individu")
-        nik_individu = st.text_input("NIK")
-        kecamatan = st.text_input("Kecamatan")
-        kampung = st.text_input("Kampung")
+        nama_individu = st.text_input("Nama (Individu)")
+        nik_individu = st.text_input("NIK (Individu)")
+
+        # dropdown kecamatan & kampung
+        kecamatan = st.selectbox("Pilih Kecamatan", list(DATA_WILAYAH.keys()))
+        kampung = st.selectbox("Pilih Kampung", DATA_WILAYAH[kecamatan])
+
     with col2:
-        nama_kelompok = st.text_input("Nama Kelompok")
-        pengurus_anggota = st.text_area("Pengurus & Anggota")
-        no_akta = st.text_input("No. Akta")
-        jenis_bantuan = st.selectbox("Jenis Bantuan", ["Modal Usaha", "Beasiswa", "Bantuan Tunai", "Lainnya"])
+        nama_kelompok = st.text_input("Nama Kelompok / UMKM")
+        pengurus_anggota = st.text_area("Nama Pengurus & Anggota Kelompok")
+        nik_kelompok = st.text_input("Nomor Registrasi/No. Akta Notaris Kelompok")
+        jenis_bantuan = st.selectbox("Jenis Bantuan", ["Modal Usaha", "Alat Produksi", "Pelatihan", "Beasiswa", "Bantuan Tunai", "Bantuan Rumah Layak Huni", "Lainnya"])
         rincian_bantuan = st.text_area("Rincian Bantuan")
-        jumlah_bantuan = st.number_input("Jumlah Bantuan", min_value=0, step=1000)
-        total_pagu = st.number_input("Total PAGU", min_value=0, step=1000)
-        opd = st.text_input("OPD Penanggung Jawab")
-    
+
+    jumlah_bantuan = st.number_input("Jumlah Bantuan (Rp)", min_value=0, step=1000)
+    total_PAGU = st.number_input("Total Penyerapan PAGU (Rp)", min_value=0, step=1000)
+
     if st.button("💾 Simpan Data"):
         new_data = pd.DataFrame([{
-            "Program": program, "Kegiatan": kegiatan, "Sub Kegiatan": sub_kegiatan,
-            "Nama Individu": nama_individu, "NIK Individu": nik_individu,
-            "Kecamatan": kecamatan, "Kampung": kampung,
-            "Nama Kelompok": nama_kelompok, "Pengurus_Anggota": pengurus_anggota,
-            "No_Akta": no_akta, "Jenis Bantuan": jenis_bantuan, "Rincian_Bantuan": rincian_bantuan,
-            "Jumlah_Bantuan": jumlah_bantuan, "Total_PAGU": total_pagu, "OPD": opd
+            "Program": program,
+            "Kegiatan": kegiatan,
+            "Sub Kegiatan": sub_kegiatan,
+            "Nama Individu": nama_individu,
+            "NIK Individu": nik_individu,
+            "Kecamatan": kecamatan,
+            "Kampung": kampung,
+            "Nama Kelompok/UMKM": nama_kelompok,
+            "Nama Pengurus & Anggota": pengurus_anggota,
+            "Nomor Registrasi/No. Akta Notaris Kelompok": nik_kelompok,
+            "Jenis Bantuan": jenis_bantuan,
+            "Rincian Bantuan": rincian_bantuan,
+            "Jumlah Bantuan": jumlah_bantuan,
+            "Total PAGU": total_PAGU
         }])
-        
-        # 🔹 Simpan ke Firebase
-        try:
-            if db:
-                db.collection("data_capkt").add(new_data.to_dict(orient="records")[0])
-                st.success("✅ Data tersimpan di Firebase")
-        except Exception as e:
-            st.warning(f"⚠️ Firebase gagal: {e}")
-        
-        # 🔹 Simpan ke SQLite fallback
-        try:
-            c.execute("""
-            INSERT INTO bantuan VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-            """, tuple(new_data.iloc[0]))
-            conn.commit()
-            st.success("✅ Data tersimpan di SQLite lokal")
-        except Exception as e:
-            st.error(f"❌ SQLite gagal: {e}")
-        
-        # 🔹 Simpan ke Google Sheet
-        try:
-            if sheet:
-                sheet.append_row(new_data.iloc[0].tolist(), value_input_option="USER_ENTERED")
-                st.success("✅ Data tersimpan di Google Sheet")
-        except Exception as e:
-            st.warning(f"⚠️ Google Sheet gagal: {e}")
-        
-        # 🔹 Simpan ke session state
-        st.session_state.data_bantuan = pd.concat([st.session_state.data_bantuan, new_data], ignore_index=True)
+        st.session_state.data_bantuan = pd.concat(
+            [st.session_state.data_bantuan, new_data], ignore_index=True
+        )
+        st.success("✅ Data berhasil disimpan!")
 
+
+# -----------------------------
+# MENU: LIHAT DATA
+# -----------------------------
 elif menu == "Lihat Data":
     st.header("📑 Data Bantuan Tersimpan")
-    df_display = st.session_state.data_bantuan.copy()
-    if df_display.empty and db:
-        # Ambil dari Firebase
-        try:
-            data_fb = [doc.to_dict() for doc in db.collection("data_capkt").stream()]
-            df_display = pd.DataFrame(data_fb)
-        except:
-            pass
-    st.dataframe(df_display, use_container_width=True)
-    if not df_display.empty:
-        csv = df_display.to_csv(index=False).encode("utf-8")
-        st.download_button("⬇️ Download CSV", csv, "data_bantuan.csv", "text/csv")
-    else:
-        st.info("Belum ada data tersimpan.")
+    st.dataframe(st.session_state.data_bantuan, use_container_width=True)
 
+    # Tombol download
+    if not st.session_state.data_bantuan.empty:
+        csv = st.session_state.data_bantuan.to_csv(index=False).encode("utf-8")
+        st.download_button("⬇️ Download Data (CSV)", csv, "data_bantuan.csv", "text/csv")
+    else:
+        st.info("Belum ada data yang tersimpan.")
+
+# -----------------------------
+# MENU: STATISTIK
+# -----------------------------
 elif menu == "Statistik":
     st.header("📊 Statistik Data Bantuan")
-    df_stat = st.session_state.data_bantuan
-    if not df_stat.empty:
-        st.metric("Total Data", len(df_stat))
-        st.metric("Total Jumlah Bantuan", f"Rp {df_stat['Jumlah_Bantuan'].sum():,.0f}")
-        st.metric("Total PAGU", f"Rp {df_stat['Total_PAGU'].sum():,.0f}")
-        chart_data = df_stat.groupby("Jenis Bantuan")["Jumlah_Bantuan"].sum()
+
+    if not st.session_state.data_bantuan.empty:
+        total_data = len(st.session_state.data_bantuan)
+        total_jumlah = st.session_state.data_bantuan["Jumlah Bantuan"].sum()
+        total_PAGU = st.session_state.data_bantuan["Total PAGU"].sum()
+
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Total Data", total_data)
+        col2.metric("Total Jumlah Bantuan", f"Rp {total_jumlah:,.0f}")
+        col3.metric("Total PAGU", f"Rp {total_PAGU:,.0f}")
+
+        # Grafik berdasarkan Jenis Bantuan
+        st.subheader("📌 Grafik Jumlah Bantuan per Jenis Bantuan")
+        chart_data = st.session_state.data_bantuan.groupby("Jenis Bantuan")["Jumlah Bantuan"].sum()
         st.bar_chart(chart_data)
+
     else:
         st.info("Belum ada data untuk ditampilkan.")
 
+# -----------------------------
+# MENU: TENTANG
+# -----------------------------
 elif menu == "Tentang":
     st.header("ℹ️ Tentang Aplikasi")
     st.markdown("""
-    Aplikasi CAP-KT untuk monitoring penyaluran bantuan di Kutai Barat.
-    - Input data bantuan lengkap
-    - Statistik interaktif
-    - Export data ke CSV
+    Aplikasi ini dibuat menggunakan **Streamlit** untuk mendukung pengelolaan data bantuan.  
+    **Fitur utama**:
+    - Input data bantuan lengkap 📋  
+    - Tabel data dinamis 📑  
+    - Statistik & grafik interaktif 📊  
+    - Export data ke CSV ⬇️  
     """)
+import streamlit as st
+import pandas as pd
+
+st.set_page_config(page_title="📂 Aplikasi Berbagi Data", layout="wide")
+st.title("📂 Form Berbagi Data")
+# Inisialisasi session state untuk menyimpan data upload
+if "data_upload" not in st.session_state:
+    st.session_state["data_upload"] = []
+# ----------------------------
+# FORM UPLOAD DATA
+# ----------------------------
+with st.form("form_berbagi_data"):
+    st.subheader("📝 Upload Metadata & File")
+    nama_data = st.text_input("Nama Data")
+    sub_kegiatan_opd = st.text_input("Sub Kegiatan OPD")
+    unit_pengelola = st.text_input("Unit Pengelola Data (Produsen Data)")
+    sumber_data = st.text_input("Sumber Data")
+    deskripsi = st.text_area("Deskripsi Data")
+    tujuan = st.text_area("Tujuan Pengumpulan Data")
+    wilayah = st.text_input("Ruang Lingkup / Wilayah")
+    waktu = st.text_input("Waktu Pengumpulan / Update")
+    metode = st.text_input("Metode Pengumpulan")
+    kualitas = st.text_area("Kualitas dan Validasi Data")
+    indikator = st.text_input("Indikator Terkait")
+    pemanfaatan = st.text_area("Pemanfaatan Data")
+    rencana_bagi = st.text_area("Rencana Bagi Pakai Data")
+    format_data = st.selectbox("Format Data", ["CSV", "Excel", "PDF", "Word", "Lainnya"])
+    pic = st.text_input("PIC Metadata")
+
+    UNIT_KERJA = [
+        "Badan Perencanaan Pembangunan Penelitian & Pengembangan Daerah",
+        "Badan Pendapatan Daerah",
+        "Badan Kepegawaian dan Pengembangan Sumber Daya Manusia",
+        "Badan Keuangan dan Aset Daerah",
+        "Badan Kesatuan Bangsa dan Politik",
+        "Badan Penanggulangan Bencana Daerah",
+        "Inspektorat Daerah",
+        "Dinas Pendidikan dan Kebudayaan",
+        "Dinas Kesehatan",
+        "Dinas Pekerjaan Umum dan Penataan Ruang",
+        "Dinas Perumahan, Kawasan Pemukiman dan Pertanahan",
+        "Satuan Polisi Pamong Praja",
+        "Dinas Sosial",
+        "Dinas Pengendalian Penduduk, Keluarga Berencana, Pemberdayaan Perempuan dan Perlindungan Anak",
+        "Dinas Tenaga Kerja dan Transmigrasi",
+        "Dinas Kependudukan dan Pencatatan Sipil",
+        "Dinas Pemberdayaan Masyarakat dan Kampung",
+        "Dinas Perhubungan",
+        "Dinas Komunikasi dan Informatika",
+        "Dinas Penanaman Modal dan Pelayanan Terpadu Satu Pintu",
+        "Dinas Pemuda dan Olahraga",
+        "Dinas Arsip dan Perpustakaan",
+        "Dinas Ketahanan Pangan",
+        "Dinas Lingkungan Hidup",
+        "Dinas Perdagangan, Koperasi, Usaha Kecil dan Menengah",
+        "Dinas Pariwisata",
+        "Dinas Pertanian",
+        "Dinas Perikanan",
+        "UPT Revitalisasi Perkebunan",
+        "UPT Agrobisnis Pertanian",
+        "UPTD Balai Benih Ikan Mentiwan",
+        "Bongan",
+        "Jempang",
+        "Penyinggahan",
+        "Muara Pahu",
+        "Damai",
+        "Melak",
+        "Barong Tongkok",
+        "Sekolaq Darat",
+        "Mook Manaar Bulatn",
+        "Tering",
+        "Nyuatan",
+        "Bentian Besar",
+        "Linggang Bigung",
+        "Siluq Ngurai",
+        "Long Iram",
+        "Muara Lawa"
+    ]
+
+    unit_kerja = st.selectbox("Unit Kerja Pengupload", UNIT_KERJA)
+
+
+
+    gambaran_umum = st.text_area("Gambaran Umum Data")
+
+    uploaded_file = st.file_uploader("Pilih File untuk Diupload", type=["csv", "xlsx", "pdf", "docx"])
+
+    submitted = st.form_submit_button("📤 Upload Data")
+
+    if submitted:
+        if uploaded_file is not None:
+            # Simpan ke session state
+            st.session_state["data_upload"].append({
+                "Nama Data": nama_data,
+                "Format Data": format_data,
+                "Unit Kerja Pengupload": unit_kerja,
+                "Gambaran Umum": gambaran_umum,
+                "Nama File Asli": uploaded_file.name
+            })
+            st.success(f"✅ File '{nama_file}' berhasil diupload oleh {unit_kerja}.")
+        else:
+            st.error("⚠️ Harap unggah file sebelum submit.")
+
+# ----------------------------
+# TABEL DATA UPLOAD
+# ----------------------------
+st.subheader("📑 Daftar Data yang Sudah Diupload")
+
+if len(st.session_state["data_upload"]) > 0:
+    df = pd.DataFrame(st.session_state["data_upload"])
+    st.dataframe(df, use_container_width=True)
+else:
+    st.info("Belum ada data yang diupload.")
+
+import streamlit as st
+
+st.set_page_config(
+    page_title="📊 CAP-KT (Cek Aktivitas & Program Kemiskinan Terpadu) Kutai Barat",
+    page_icon="📂",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+# Nama file background (letakkan di folder project)
+sidebar_bg = "sidebar_bg.jpg"  
+
+# CSS background + overlay
+st.markdown(
+    f"""
+    <style>
+    [data-testid="stSidebar"] {{
+        background: linear-gradient(
+            rgba(0, 0, 0, 0.6),   /* overlay hitam transparan */
+            rgba(0, 0, 0, 0.6)
+        ), url("file:///{sidebar_bg}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        color: white;
+    }}
+
+    [data-testid="stSidebar"] * {{
+        color: white !important;  /* teks putih agar kontras */
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# -----------------------------
+# Sidebar Menu Navigasi
+# -----------------------------
+st.sidebar.title("🔎 Menu Navigasi")
+menu = st.sidebar.radio(
+    "Pilih Halaman:", 
+    ["Beranda", "Input Data", "Statistik", "Tentang Aplikasi"]
+)
+
+# -----------------------------
+# Konten sesuai pilihan
+# -----------------------------
+if menu == "Beranda":
+    st.title("🏠 Beranda")
+    st.info("Ini adalah halaman utama aplikasi.")
+
+elif menu == "Input Data":
+    st.title("✍️ Input Data")
+    st.write("Form untuk menambahkan data.")
+
+elif menu == "Statistik":
+    st.title("📊 Statistik")
+    st.write("Grafik & analisis data akan muncul di sini.")
+
+elif menu == "Tentang Aplikasi":
+    st.title("ℹ️ Tentang")
+    st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
+
+
+
+
+
+
+
+
+
+
 
 
