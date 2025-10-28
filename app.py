@@ -7,8 +7,10 @@ import os
 import gspread
 from google.oauth2.service_account import Credentials
 
-SCOPE = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-
+SCOPE = [
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive"
+]
 try:
     creds_dict = st.secrets["gcp_service_account"]  # Ambil dari secrets.toml
     credentials = Credentials.from_service_account_info(creds_dict, scopes=SCOPE)
@@ -883,6 +885,7 @@ elif menu == "Statistik":
 elif menu == "Tentang Aplikasi":
     st.title("ℹ️ Tentang")
     st.write("Aplikasi Bank Data Kemiskinan Kutai Barat - Bappeda Litbang.")
+
 
 
 
